@@ -16,7 +16,7 @@ export class NutritionalAssessmentResultFactory implements Factory<CreateNutriti
    async create(props: CreateNutritionalAssessmentResultProps): Promise<Result<NutritionalAssessmentResult>> {
       try {
          const { globalDiagnostics, growthIndicatorValues, clinicalAnalysis, biologicalInterpretation } = props;
-         const uniqueId = await this.idGenerator.generate();
+         const uniqueId = this.idGenerator.generate();
          const nutritionalAssessmentResult = new NutritionalAssessmentResult({
             id: uniqueId.toString(),
             props: {

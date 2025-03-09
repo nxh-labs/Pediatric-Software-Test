@@ -6,6 +6,8 @@ export class PatientDiagnosticDataMapper implements ApplicationMapper<PatientDia
    toResponse(entity: PatientDiagnosticData): PatientDiagnosticDataDto {
       return {
          id: entity.id,
+         sex: entity.getGender().sex,
+         birthday: entity.getBirthDay().toString(),
          anthropometricData: {
             data: entity
                .getAnthropometricData()
@@ -23,7 +25,7 @@ export class PatientDiagnosticDataMapper implements ApplicationMapper<PatientDia
          })),
          clinicalData: {
             edema: this.mapClinicalSign<EdemaData>(entity.getClinicalSigns().unpack().edema),
-            othersSigns: entity.getClinicalSigns().unpack().otherSigns.map(this.mapClinicalSign),
+            otherSigns: entity.getClinicalSigns().unpack().otherSigns.map(this.mapClinicalSign),
          },
          createdAt: entity.createdAt,
          updatedAt: entity.updatedAt,

@@ -24,7 +24,7 @@ export interface IPatientDiagnosticData extends EntityPropsBaseType {
    biologicalTestResults: BiologicalTestResult[];
 }
 export type CreatePatientDiagnosticData = {
-   sex: "M" | "F" | "O";
+   sex: `${Sex}`;
    birthday: string;
    anthropometricData: CreateAnthropometricData;
    clinicalSigns: CreateClinicalData

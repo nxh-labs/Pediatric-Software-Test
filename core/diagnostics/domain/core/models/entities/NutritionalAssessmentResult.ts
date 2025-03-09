@@ -11,7 +11,7 @@ export interface INutritionalAssessmentResult extends EntityPropsBaseType {
    globalDiagnostics: GlobalDiagnostic[];
 }
 export type CreateNutritionalAssessmentResult = {
-   globalDiagnostic: { code: string; criteriaUsed: string[] }[];
+   globalDiagnostics: { code: string; criteriaUsed: string[] }[];
    growthIndicatorValues: CreateGrowthIndicatorValueProps[];
    clinicalAnalysis: CreateClinicalNutritionalAnalysisResultProps[];
    biologicalInterpretation: CreateBiologicalAnalysisInterpretationProps[];
@@ -95,7 +95,7 @@ export class NutritionalAssessmentResult extends Entity<INutritionalAssessmentRe
    }
    static create(createProps: CreateNutritionalAssessmentResult, id: AggregateID): Result<NutritionalAssessmentResult> {
       try {
-         const globalDiagnosticsRes = createProps.globalDiagnostic.map((diagnostic) =>
+         const globalDiagnosticsRes = createProps.globalDiagnostics.map((diagnostic) =>
             GlobalDiagnostic.create(diagnostic.code, diagnostic.criteriaUsed),
          );
          const growthIndicatorValuesRes = createProps.growthIndicatorValues.map(GrowthIndicatorValue.create);
