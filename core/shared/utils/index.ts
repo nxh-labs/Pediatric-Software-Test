@@ -1,1 +1,2 @@
-export * from "./DateManager"
+export * from "./DateManager";
+export * from "./types";

@@ -1,0 +1,299 @@
+classDiagram 
+ %% Aggregate Root 
+ class NutritionalDiagnostic {
+    <<AggregateRoot>>
+    +UUID patientId
+    +PatientDiagnosticData patientData
+    +PatientDiagnosticResult result
+    +Date date
+    +String[] notes
+    +Boolean atInit
+    +DiagnosticModification[] modificationHistories
+    +changeAnthropometricData(AnthropometricData) void
+    +changeClinicalData(ClinicalData) void
+    +saveDiagnostic(PatientDiagnosticResult) void
+    +correctDiagnostic(DiagnosticModification) void
+    +isEnded() Boolean
+    +addNotes(String) void 
+ }
+ %% Entities
+ class PatientDiagnosticData {
+    <<Entity>>
+    + M | F sex
+    +Int age_month
+    +Int age_year
+    +Int age_days
+    +AnthropometricData measureAnthrop
+    +ClinicalData clinicalSigns
+    +BiologicalTestResult biologicalTestResults 
+ }
+ class PatientDiagnosticResult {
+    <<Entity>>
+    +GrowthIndicatorValue[] growthIndicators
+    +MicronutrientDeficiency[] suspectedDeficiencies
+    +BiologicalAnalysisInterpretation[] biologicalAnalysisInterpretation
+    +GlobalDiagnostic globalDiagnostic
+ }
+ %% Value Object 
+ class AnthropometricData {
+    <<ValueObject>>
+    +Int? weight
+    +Int? height
+    +Int? length
+    +Int? armCircumference 
+    +Int? headCircumference
+ }
+ class ClinicalData {
+    <<ValueObject>>
+    +ClinicalSignT edema
+    +ClinicalSignT[] othersSigns
+ }
+ class ClinicalSignT{
+    <<ValueObject>>
+    +String name
+    +String code 
+    +T data
+ }
+ class Edema {
+    <<Object>>
+    +Bilateral|Unilateral type
+    +Range(0,3) godetStep
+ }
+ class BiologicalTestResult {
+    <<ValueObject>>
+    +String code 
+    +Float value
+    +UnitCode unit
+ }
+
+ class GrowthIndicatorValue {
+    <<ValueObject>>
+    +String name
+    +String code
+    +Percentile|Z-score unit
+    +OMS|NCHS|CDC growthStandard
+    +GrowthCurve|GrowthTable referenceSource
+    +String interpretation
+    +Int value
+ }
+ class MicronutrientDeficiency {
+    <<ValueObject>>
+    +String name
+    +String code
+    +String[] clinicalSignNames
+ }
+class BiologicalAnalysisInterpretation {
+    <<ValueObject>>
+    +String name
+    +String code
+    +String undo %% Just temporally
+    +String over %% Just temporally
+}
+class GlobalDiagnostic{
+    <<ValueObject>>
+    +String name
+    +String code
+    +String[] criteriaUsed
+}
+class DiagnosticModification {
+  <<ValueObject>>
+  +PatientDiagnosticResult prevResult
+  +PatientDiagnosticResult nextResult
+  +String justification
+  +Date date
+}
+
+%% Reference Data Models
+class GrowthReferenceChart {
+    <<Entity>>
+    +String code 
+    +String name
+    +F|M sex
+    +ChartData[] data
+}
+class ChartData {
+    <<ValueObject>>
+    +Int value
+    +days|cm|mm unitOfValue
+    +String unitOfSD
+    +Number median
+    +Int l
+    +Int s
+    +Object[] sd
+}
+class Indicator {
+    <<Entity>>
+    +String name
+    +String code 
+    +String[] neededMeasureCode
+    +String axeX
+    +String axeY
+    +IndicatorInterpreter[] interpretation
+}
+class IndicatorInterpreter {
+    <<ValueObject>>
+    +String name
+    +String code
+    +String[]|Object condition
+}
+class AnthropMeasure {
+<<Entity>>
+ +String name
+ +String code 
+ +String[] validityRules
+ +String[] validityRulesVariables
+ +Unit unit
+ +Unit[] availableUnits 
+}
+class ClinicalSignReference {
+   <<Entity>>
+   +String name
+   +String code
+   +String description
+   +String[] suspectedNutrient
+   +String condition
+   +String[] conditionVariables
+   +ClinicalSignData[] data
+}
+
+class ClinicalSignData {
+   <<Object>>
+   +String name
+   +String code
+   +String question
+   +String dataType
+}
+
+class DiagnosticRule{
+   <<Entity>>
+   +String name
+   +String code
+   +DiagnosticCondition[] conditions
+}
+class DiagnosticCondition {
+   <<Object>>
+   +AND|OR logic
+   +Criteria[] criteria
+}
+class Criteria {
+   <<Object>>
+   +Anthropometric|Clinical|Biochemical type
+   +String indicator
+   +String operator
+   +Int|Boolean|String value
+   +Boolean isBoolean
+   +Unit unitOfValueIfInt
+}
+class BiochemicalReference {
+   <<Entity>>
+   +String name
+   +String code
+   +Unit unit
+   +Unit[] availableUnits
+   +Range[start,end] range
+   +String undo
+   +String over
+   +String[] validityRules
+}
+class Unit {
+<<Object>>
++String code
++String name 
++Float conversionFactor
++String convertUnitCode
+}
+ %% Services
+class PatientDataValidationService {
+   <<Service>>
+   -validateAnthrop(PatientDiagnosticData,AnthropMeasure[]) ValidateResult
+   -validateBiological(PatientDiagnosticData,BiochemicalReference[]) ValidateResult
+   -validateClinical(PatientDiagnosticData,ClinicalSignT[]) ValidateResult
+   +validate(PatientDiagnosticData) ValidateResult 
+}
+class GrowthIndicatorService{
+   <<Service>>
+   +identifyPossibleIndicator(PatientDiagnosticData,Indicator[]) Indicator[]
+   +getRequireMeasureForIndicator(String indicatorCode,Indicator[] indicators) AnthropMeasure[]
+   +calculateIndicators(PatientDiagnosticData,Indicator,GrowthReferenceChart,growthStandard) GrowthIndicatorValue
+   +calculateAllIndicators(PatientDiagnosticData,growthStandard,GrowthIndicatorChart[]) GrowthIndicatorValue[]
+}
+class ClinicalSignService {
+   <<Service>>
+   +identifyPossibleSign(PatientDiagnosticData,ClinicalSignReference[]) ClinicalSignReference[]
+   +getSuspectedNutrient(PatientDiagnosticData,ClinicalSignReference[]) MicronutrientDeficiency[]
+}
+class BiologicalService {
+   <<Service>>
+   +identifyPossibleBiochemical(PatientDiagnosticData,BiochemicalReference[]) BiochemicalReference[]
+   +getBiologicalAnalysisInterpretation(PatientDiagnosticData,BiochemicalReference[]) BiologicalAnalysisInterpretation[]
+}
+class GlobalDiagnosticService {
+   <<Service>>
+   +makeGlobalDiagnostic(PatientDiagnosticData,GrowthIndicatorValue[],MicronutrientDeficiency[],BiologicalAnalysisInterpretation[],DiagnosticRule[]) GlobalDiagnostic
+
+   }
+class DiagnosticService {
+  <<Service>>
+  +makeDiagnostic(PatientDiagnosticData) PatientDiagnosticResult
+}
+%% Relationships
+   %% AggregateRoot
+   NutritionalDiagnostic "1"--> "1" PatientDiagnosticData
+   NutritionalDiagnostic "1" --> "1" PatientDiagnosticResult
+   NutritionalDiagnostic "1" --> "*" DiagnosticModification
+   
+   %% Entities
+   PatientDiagnosticData "1" --> "1" AnthropometricData
+   PatientDiagnosticData "1" --> "1" ClinicalData
+   PatientDiagnosticData "1" --> "*" BiologicalTestResult
+
+   ClinicalData "1" --> "*" ClinicalSignT
+   ClinicalSignT <|-- Edema
+
+   PatientDiagnosticResult "1" --> "*" GrowthIndicatorValue
+   PatientDiagnosticResult "1" --> "*" MicronutrientDeficiency
+   PatientDiagnosticResult "1" --> "1" GlobalDiagnostic
+   PatientDiagnosticResult "1" --> "*" BiologicalAnalysisInterpretation
+
+   GrowthReferenceChart "1" --> "*" ChartData
+   Indicator "1" --> "*" IndicatorInterpreter
+   ClinicalSignReference "1" --> "*" ClinicalSignData 
+   DiagnosticRule "1" --> "*" DiagnosticCondition
+   DiagnosticCondition "1" --> "*" Criteria
+
+   %% Services 
+   PatientDataValidationService --> PatientDiagnosticData: validates
+   PatientDataValidationService --> AnthropMeasure: uses
+   PatientDataValidationService --> BiochemicalReference: uses
+   PatientDataValidationService --> ClinicalSignT: uses
+
+   GrowthIndicatorService --> PatientDiagnosticData: analyzes
+   GrowthIndicatorService --> GrowthIndicatorValue: produces
+
+   ClinicalSignService --> PatientDiagnosticData: analyses
+   ClinicalSignService --> MicronutrientDeficiency: generates
+
+   BiologicalService --> PatientDiagnosticData: analyzes
+   BiologicalService --> BiologicalAnalysisInterpretation: generates
+
+   GlobalDiagnosticService --> GlobalDiagnostic: generates
+
+   DiagnosticService --> PatientDiagnosticResult: enhances
+   DiagnosticService --> PatientDiagnosticData: analyzes
+
+   GrowthIndicatorService --> Indicator: uses
+   GrowthIndicatorService --> GrowthReferenceChart: references
+   ClinicalSignService --> ClinicalSignReference: references
+   BiologicalService --> BiochemicalReference: references
+
+
+   GlobalDiagnosticService --> DiagnosticRule: applies
+   GlobalDiagnosticService --> GrowthIndicatorValue: analyzes
+   GlobalDiagnosticService --> MicronutrientDeficiency: analyzes
+   GlobalDiagnosticService --> BiologicalAnalysisInterpretation: analyzes
+
+
+
+
+
+

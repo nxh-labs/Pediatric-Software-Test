@@ -6,14 +6,14 @@ import {
 import { Result } from "./../../../core";
 export class Email extends ValueObject<string> {
   private static isValidEmailFormat(value: string): boolean {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     return emailRegex.test(value);
   }
 
   protected validate(props: ValueObjectProps<string>): void {
     if (!Email.isValidEmailFormat(props._value)) {
       throw new InvalidArgumentFormatError(
-        "Le format de l'adresse email est invalide."
+        "The email must be in a valid format."
       );
     }
   }
@@ -22,7 +22,7 @@ export class Email extends ValueObject<string> {
     try {
       const email = new Email({ _value: value });
       return Result.ok<Email>(email);
-    } catch (e: any) {
+    } catch (e: unknown) {
     return handleError(e)  }
   }
 

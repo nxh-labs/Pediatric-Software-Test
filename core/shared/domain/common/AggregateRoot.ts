@@ -1,27 +1,29 @@
-import { Entity, AggregateID } from "./Entity";
+import { Entity, AggregateID, EntityPropsBaseType } from "./Entity";
 import { DomainEvent } from "./../events";
 
 export abstract class AggregateRoot<
-  EntityProps extends {}
+  EntityProps extends EntityPropsBaseType
 > extends Entity<EntityProps> {
-  private _domainEvents: DomainEvent<any>[] = [];
+  private _domainEvents: DomainEvent<object>[] = [];
   getID(): AggregateID {
     return this.id;
   }
-  getDomainEvents(): DomainEvent<any>[] {
+  getDomainEvents(): DomainEvent<object>[] {
     return this._domainEvents;
   }
   clearDomainEvent(): void {
     this._domainEvents = [];
   }
-  protected addDomainEvent<T extends {}>(domainEvent: DomainEvent<T>): void {
+  protected addDomainEvent<T extends object>(
+    domainEvent: DomainEvent<T>
+  ): void {
     // Add the domain event to this aggregate's list of domain events
     this._domainEvents.push(domainEvent);
     // Log the domain event
     this.logDomainEventAdded(domainEvent);
   }
 
-  private logDomainEventAdded(domainEvent: DomainEvent<any>): void {
+  private logDomainEventAdded(domainEvent: DomainEvent<object>): void {
     const thisClass = Reflect.getPrototypeOf(this);
     console.info(
       `[Domain Event Created]:`,

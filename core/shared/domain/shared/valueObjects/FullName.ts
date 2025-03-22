@@ -1,17 +1,17 @@
-import { ValueObject } from "./../../common";
-import { Guard, Result } from "./../../../core";
-import { EmptyStringError, handleError } from "./../../../exceptions";
-export class HumanName extends ValueObject<string> {
+import { ValueObject } from "../../common";
+import { Guard, Result } from "../../../core";
+import { EmptyStringError, handleError } from "../../../exceptions";
+export class FullName extends ValueObject<string> {
    constructor(nom: string) {
       super({ _value: nom });
    }
 
    protected validate(props: { _value: string }): void {
       if (Guard.isEmpty(props._value).succeeded) {
-         throw new EmptyStringError("Le nom ne peut pas être vide.");
+         throw new EmptyStringError("The name must be empty.");
       }
-      //TODO: Ajouter la regle de la longeur du nom
-      // Valider d'autres règles métier si nécessaire
+      //TODO: Add a rule to control name length
+    
    }
 
    get lastName(): string {
@@ -30,11 +30,11 @@ export class HumanName extends ValueObject<string> {
    toString(): string {
       return this.props._value;
    }
-   static create(nom: string): Result<HumanName> {
+   static create(nom: string): Result<FullName> {
       try {
-         const name = new HumanName(nom);
-         return Result.ok<HumanName>(name);
-      } catch (e: any) {
+         const name = new FullName(nom);
+         return Result.ok<FullName>(name);
+      } catch (e: unknown) {
          return handleError(e);
       }
    }

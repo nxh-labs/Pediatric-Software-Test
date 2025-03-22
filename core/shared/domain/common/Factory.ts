@@ -1,6 +1,9 @@
 import { Result } from "../../core";
-import { Entity } from "./Entity";
+import { Entity, EntityPropsBaseType } from "./Entity";
 
-export interface Factory<Props extends Object, T extends Entity<any>> {
-   create(props: Props): Result<T> | Promise<Result<T>>;
+export interface Factory<
+  Props extends EntityPropsBaseType,
+  T extends Entity<EntityPropsBaseType>
+> {
+  create(props: Props): Result<T> | Promise<Result<T>>;
 }

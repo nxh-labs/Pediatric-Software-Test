@@ -1,8 +1,8 @@
-import { Entity } from "../domain";
+import { Entity, EntityPropsBaseType } from "../domain";
 
 export interface ApplicationMapper<
-  DomainEntity extends Entity<any>,
-  Dto extends Object
+  DomainEntity extends Entity<EntityPropsBaseType>,
+  Dto extends object
 > {
-  toResponse(entiry: DomainEntity): Dto;
+  toResponse(entity: DomainEntity): Dto;
 }

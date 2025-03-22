@@ -30,7 +30,7 @@ export class Birthday extends DomainDate {
       try {
          const birthday = new Birthday(date);
          return Result.ok<Birthday>(birthday);
-      } catch (e: any) {
+      } catch (e: unknown) {
          return handleError(e);
       }
    }

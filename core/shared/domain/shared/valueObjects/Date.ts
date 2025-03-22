@@ -21,9 +21,9 @@ export class DomainDate extends ValueObject<string> {
 
    protected validate(props: Readonly<DomainPrimitive<string>>): void {
       if (Guard.isEmpty(props._value).succeeded) {
-         throw new ArgumentNotProvidedException("La date ne peut pas être vide.");
+         throw new ArgumentNotProvidedException("The date must be empty.");
       }
-      // Tableau des expressions régulières pour les formats de date supportés
+     
       const dateFormatsRegex = [
          /^\d{4}-\d{2}-\d{2}$/, // YYYY-MM-DD
          /^\d{2}\/\d{2}\/\d{4}$/, // DD/MM/YYYY
@@ -39,10 +39,10 @@ export class DomainDate extends ValueObject<string> {
       }
 
       if (!validFormat) {
-         throw new InvalidArgumentFormatError("Format de date invalide. Utilisez le format YYYY-MM-DD, DD/MM/YYYY ou MM/DD/YYYY.");
+         throw new InvalidArgumentFormatError("Invalid date format. Use the format YYYY-MM-DD, DD/MM/YYYY or MM/DD/YYYY.");
       }
-      // Valider l'année, le mois et le jour en fonction du format détecté
-      const parts = props._value.split(/[\/-]/);
+   
+      const parts = props._value.split(/[/-]/);
       let year, month, day;
 
       if (parts[0].length === 4) {
@@ -54,21 +54,19 @@ export class DomainDate extends ValueObject<string> {
          month = parseInt(parts[0]);
          day = parseInt(parts[1]);
       } else {
-         throw new InvalidArgumentFormatError("Format de date invalide. Assurez-vous que l'année est au format YYYY.");
+         throw new InvalidArgumentFormatError("Invalid date format. You must use this format for year YYYY.");
       }
-
-      // Valider l'année, le mois et le jour individuellement
       if (isNaN(year) || isNaN(month) || isNaN(day)) {
-         throw new ArgumentInvalidException("Date invalide. Assurez-vous que l'année, le mois et le jour sont des nombres valides.");
+         throw new ArgumentInvalidException("Invalid date.");
       }
 
       if (month < 1 || month > 12) {
-         throw new ArgumentOutOfRangeException("Mois de date invalide. Utilisez des valeurs entre 1 et 12.");
+         throw new ArgumentOutOfRangeException("Month of invalid date. Use a value between 1 and 12.");
       }
 
       const daysInMonth = new Date(year, month, 0).getDate();
       if (day < 1 || day > daysInMonth) {
-         throw new ArgumentOutOfRangeException("Jour de date invalide. Assurez-vous que le jour est valide pour le mois donné.");
+         throw new ArgumentOutOfRangeException("Invalid day in month. Use a valid day in a month.");
       }
    }
 
@@ -83,8 +81,8 @@ export class DomainDate extends ValueObject<string> {
 
       return today.getMonth() === date.getMonth() && today.getDate() === date.getDate();
    }
-   public isSameDay(cdate: DomainDate): boolean {
-      const date = new Date(cdate.toString());
+   public isSameDay(cDate: DomainDate): boolean {
+      const date = new Date(cDate.toString());
       const internalDate = new Date(this.props._value);
       return (
          date.getMonth() === internalDate.getMonth() && date.getDate() === internalDate.getDate() && date.getFullYear() === internalDate.getFullYear()
@@ -113,9 +111,9 @@ export class DomainDate extends ValueObject<string> {
    }
    static create(date?: string): Result<DomainDate> {
       try {
-         const cdate = new DomainDate(date);
-         return Result.ok<DomainDate>(cdate);
-      } catch (e: any) {
+         const cDate = new DomainDate(date);
+         return Result.ok<DomainDate>(cDate);
+      } catch (e: unknown) {
          return handleError(e);
       }
    }

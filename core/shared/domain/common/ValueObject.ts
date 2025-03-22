@@ -69,7 +69,7 @@ export abstract class ValueObject<T> {
     try {
       this.validate(this.props);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   }

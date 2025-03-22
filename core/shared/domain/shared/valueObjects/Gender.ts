@@ -1,54 +1,55 @@
 import { ValueObject } from "./../../common";
 import { ArgumentInvalidException, handleError } from "../../../exceptions";
 import { Result } from "./../../../core";
-export enum Sexe {
-   MALE = "M",
-   FEMALE = "F",
-   OTHER = "O",
+export enum Sex {
+  MALE = "M",
+  FEMALE = "F",
+  OTHER = "O",
 }
 
-export class Gender extends ValueObject<Sexe> {
-   constructor(sexe: Sexe) {
-      super({ _value: sexe });
-   }
+export class Gender extends ValueObject<Sex> {
+  constructor(sex: Sex) {
+    super({ _value: sex });
+  }
 
-   protected validate(props: { _value: Sexe }): void {
-      if (!Object.values(Sexe).includes(props._value)) {
-         throw new ArgumentInvalidException("Sexe invalide.");
-      }
-   }
+  protected validate(props: { _value: Sex }): void {
+    if (!Object.values(Sex).includes(props._value)) {
+      throw new ArgumentInvalidException("Invalid Sex value.");
+    }
+  }
 
-   public isMale(): boolean {
-      return this.props._value === Sexe.MALE;
-   }
+  public isMale(): boolean {
+    return this.props._value === Sex.MALE;
+  }
 
-   public isFemale(): boolean {
-      return this.props._value === Sexe.FEMALE;
-   }
+  public isFemale(): boolean {
+    return this.props._value === Sex.FEMALE;
+  }
 
-   public isOther(): boolean {
-      return this.props._value === Sexe.OTHER;
-   }
-   get sexe(): "M" | "F" | "O" {
-      return this.props._value;
-   }
-   public toString(): string {
-      switch (this.props._value) {
-         case Sexe.MALE:
-            return "Masculin";
-         case Sexe.FEMALE:
-            return "Féminin";
-         case Sexe.OTHER:
-            return "Autre";
-         default:
-            return "Inconnu";
-      }
-   }
-   static create(sexe: "M" | "F" | "O"): Result<Gender> {
-      try {
-         const gender = new Gender(sexe as Sexe);
-         return Result.ok<Gender>(gender);
-      } catch (e: any) {
-       return handleError(e)     }
-   }
+  public isOther(): boolean {
+    return this.props._value === Sex.OTHER;
+  }
+  get sex(): "M" | "F" | "O" {
+    return this.props._value;
+  }
+  public toString(): string {
+    switch (this.props._value) {
+      case Sex.MALE:
+        return "Masculin";
+      case Sex.FEMALE:
+        return "Féminin";
+      case Sex.OTHER:
+        return "Autre";
+      default:
+        return "Inconnu";
+    }
+  }
+  static create(sex: "M" | "F" | "O"): Result<Gender> {
+    try {
+      const gender = new Gender(sex as Sex);
+      return Result.ok<Gender>(gender);
+    } catch (e: unknown) {
+      return handleError(e);
+    }
+  }
 }

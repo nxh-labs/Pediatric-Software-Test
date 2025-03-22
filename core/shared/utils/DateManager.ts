@@ -1,7 +1,6 @@
 export class DateManager {
   private static fixDateNumberToString(value: number): string {
-    let fixedNumber = value.toString().padStart(2, "0");
-    return fixedNumber;
+    return value.toString().padStart(2, "0");
   }
 
   public static now(): number {
@@ -33,7 +32,7 @@ export class DateManager {
     const minutes = this.fixDateNumberToString(date.getUTCMinutes());
     const seconds = this.fixDateNumberToString(date.getUTCSeconds());
 
-    const timestampFormmat =
+    const timestampFormat =
       year +
       "-" +
       month +
@@ -45,7 +44,7 @@ export class DateManager {
       minutes +
       ":" +
       seconds;
-    return timestampFormmat;
+    return timestampFormat;
   }
   public static dateToDateTimeString(date: Date): string {
     const year = date.getFullYear();
@@ -55,7 +54,7 @@ export class DateManager {
     const minutes = this.fixDateNumberToString(date.getMinutes());
     const seconds = this.fixDateNumberToString(date.getSeconds());
 
-    const datetimeFormmat =
+    const datetimeFormat =
       year +
       "-" +
       month +
@@ -67,6 +66,6 @@ export class DateManager {
       minutes +
       ":" +
       seconds;
-    return datetimeFormmat;
+    return datetimeFormat;
   }
 }
