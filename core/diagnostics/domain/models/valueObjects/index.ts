@@ -6,3 +6,4 @@ export * from "./ClinicalSign";
 export * from "./GlobalDiagnostic";
 export * from "./GrowthIndicatorValue";
 export * from "./MicronutrientDeficiency";
+export * from "./DiagnosticModification";
