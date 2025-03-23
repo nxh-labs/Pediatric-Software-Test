@@ -109,17 +109,22 @@ class GrowthReferenceChart {
     +String code 
     +String name
     +F|M sex
+   +days|cm|mm unitOfValue
+    +String unitOfSD
     +ChartData[] data
+    +ChartInterpreter[] interpretation
+    +String valueFormular
+    +String[] formularVariable
+
 }
 class ChartData {
     <<ValueObject>>
     +Int value
-    +days|cm|mm unitOfValue
-    +String unitOfSD
     +Number median
     +Int l
     +Int s
     +Object[] sd
+  
 }
 class Indicator {
     <<Entity>>
@@ -128,9 +133,15 @@ class Indicator {
     +String[] neededMeasureCode
     +String axeX
     +String axeY
-    +IndicatorInterpreter[] interpretation
+    +AvailableChart[] availableRefChart
 }
-class IndicatorInterpreter {
+class AvailableChart {
+   <<ValueObject>>
+   +String chartCode 
+   +String condition
+   +String[] conditionVariables
+}
+class ChartInterpreter {
     <<ValueObject>>
     +String name
     +String code
@@ -196,7 +207,7 @@ class BiochemicalReference {
    +String[] validityRules
 }
 class Unit {
-<<Object>>
+<<Entity>>
 +String code
 +String name 
 +Float conversionFactor
@@ -256,7 +267,9 @@ class DiagnosticService {
    PatientDiagnosticResult "1" --> "*" BiologicalAnalysisInterpretation
 
    GrowthReferenceChart "1" --> "*" ChartData
-   Indicator "1" --> "*" IndicatorInterpreter
+   GrowthReferenceChart "1" --> "*" ChartInterpreter
+   AvailableChart "1" --> "1" GrowthReferenceChart
+   Indicator "1" --> "*" AvailableChart
    ClinicalSignReference "1" --> "*" ClinicalSignData 
    DiagnosticRule "1" --> "*" DiagnosticCondition
    DiagnosticCondition "1" --> "*" Criteria

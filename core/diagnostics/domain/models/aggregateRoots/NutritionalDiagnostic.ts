@@ -10,7 +10,7 @@ import {
    InvalidResultError,
 } from "@shared";
 import { PatientDiagnosticResult, PatientDiagnosticData } from "../entities";
-import { DiagnosticModification } from "../valueObjects";
+import { AnthropometricData, BiologicalTestResult, ClinicalData, DiagnosticModification } from "../valueObjects";
 
 export interface INutritionalDiagnostic extends EntityPropsBaseType {
    patientId: AggregateID;
@@ -23,6 +23,56 @@ export interface INutritionalDiagnostic extends EntityPropsBaseType {
 }
 
 export class NutritionalDiagnostic extends AggregateRoot<INutritionalDiagnostic> {
+   getPatientId(): AggregateID {
+      return this.props.patientId;
+   }
+   getPatientData(): PatientDiagnosticData {
+      return this.props.patientData;
+   }
+   getDiagnosticResult(): PatientDiagnosticResult | undefined {
+      return this.props.result;
+   }
+   getNotes(): string[] {
+      return this.props.notes;
+   }
+   getModificationHistories(): DiagnosticModification[] {
+      return this.props.modificationHistories;
+   }
+   addNotes(...notes: string[]) {
+      this.props.notes.push(...notes);
+      this.validate();
+   }
+   changeAnthropometricData(anthropData: AnthropometricData) {
+      this.props.patientData.changeAnthropometricData(anthropData);
+      this.validate();
+      this.init();
+   }
+   changeClinicalData(clinicalData: ClinicalData) {
+      this.props.patientData.changeClinicalSigns(clinicalData);
+      this.validate();
+      this.init();
+   }
+   changeBiologicalTestResult(biologicalAnalysisResults: BiologicalTestResult[]) {
+      this.props.patientData.addBiologicalTestResult(...biologicalAnalysisResults);
+      this.validate();
+      this.init();
+   }
+   saveDiagnostic(patientDiagnosticResult: PatientDiagnosticResult): void {
+      if (this.props.atInit) {
+         this.props.result = patientDiagnosticResult;
+      }
+      this.props.atInit = false;
+   }
+   correctDiagnostic(diagnosticModification: DiagnosticModification) {
+      if (!this.props.atInit) {
+         this.props.result = diagnosticModification.unpack().nextResult;
+         this.props.modificationHistories.push(diagnosticModification);
+      }
+   }
+   private init() {
+      this.props.atInit = true;
+      this.props.result = undefined;
+   }
    public validate(): void {
       this._isValid = false;
       if (Guard.isEmpty(this.props.patientId).succeeded)
