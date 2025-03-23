@@ -29,3 +29,10 @@ export const DAY_IN_MONTHS = 30.4375;
 export const DAY_IN_YEARS = 365.25;
 export const MONTH_IN_YEARS = 12;
 export const MAX_AGE_IN_PEDIATRIC = 18;
+
+export enum ClinicalDataType {
+  INT="number",
+  BOOL="boolean",
+  STR='string',
+  RANGE ='range'
+}
