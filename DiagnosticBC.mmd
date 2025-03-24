@@ -195,6 +195,7 @@ class Criteria {
    +Boolean isBoolean
    +Unit unitOfValueIfInt
 }
+%%  je suis entrains d'opter pour l'autre maniere de faire avec des condition sous forme de string 
 class BiochemicalReference {
    <<Entity>>
    +String name
@@ -206,6 +207,10 @@ class BiochemicalReference {
    +String over
    +String[] validityRules
 }
+%% /**
+%%  * Cette entitie en vrai a besoins d'un ajustement puisque les donnes biochimique on des plages differentes pour l'age et le sex donc je dois creer une condition dans un value object et cette value object
+%%  * poura contenir la conditon , la plage , et les bornes de la pages doivent etre marquer pour bien differencier le plus/moin unique .
+%%  */
 class Unit {
 <<Entity>>
 +String code
