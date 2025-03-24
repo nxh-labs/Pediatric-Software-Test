@@ -221,7 +221,7 @@ class Unit {
  %% Services
 class PatientDataValidationService {
    <<Service>>
-   -validateAnthrop(PatientDiagnosticData,AnthropMeasure[]) ValidateResult
+   -validateAnthrop(PatientDiagnosticData,AnthropMeasure[]) 
    -validateBiological(PatientDiagnosticData,BiochemicalReference[]) ValidateResult
    -validateClinical(PatientDiagnosticData,ClinicalSignT[]) ValidateResult
    +validate(PatientDiagnosticData) ValidateResult 
