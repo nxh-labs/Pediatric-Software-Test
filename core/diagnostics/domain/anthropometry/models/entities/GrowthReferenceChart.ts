@@ -1,26 +1,25 @@
 import {
    AggregateID,
-   ArgumentInvalidException,
    EmptyStringError,
    Entity,
    EntityPropsBaseType,
+   formatError,
    Guard,
    handleError,
-   isValidFormula,
    Result,
    Sex,
    SystemCode,
    UnitCode,
 } from "@shared";
 import { ChartData, ChartInterpreter, CreateChartInterpreter, IChartData, IChartInterpreter } from "./../valueObjects";
+import { Formula, IFormula } from "../../../common";
 
 export interface IGrowthReferenceChart extends EntityPropsBaseType {
    code: SystemCode;
    name: string;
    sex: Sex;
    unitCode: UnitCode;
-   valueFormula: string;
-   formulaVariable: string[];
+   formula: Formula;
    data: ChartData[];
    chartInterpreters: ChartInterpreter[];
 }
@@ -29,8 +28,7 @@ export interface CreateGrowthReferenceChartProps {
    name: string;
    sex: "M" | "F";
    unitCode: string;
-   valueFormula: string;
-   formulaVariable: string[];
+   formula: IFormula;
    data: IChartData[];
    chartInterpreters: CreateChartInterpreter[];
 }
@@ -47,11 +45,8 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
    getUnitCode(): string {
       return this.props.unitCode.unpack();
    }
-   getFormula(): { formula: string; formulaVariable: string[] } {
-      return {
-         formula: this.props.valueFormula,
-         formulaVariable: this.props.formulaVariable,
-      };
+   getFormula(): IFormula {
+      return this.props.formula.unpack();
    }
    getChartData(): IChartData[] {
       return this.props.data.map((chartData) => chartData.unpack());
@@ -72,9 +67,8 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
       this.props.unitCode = unitCode;
       this.validate();
    }
-   changeFormula(formula: { formula: string; formulaVariables: string[] }) {
-      this.props.valueFormula = formula.formula;
-      this.props.formulaVariable = formula.formulaVariables;
+   changeFormula(formula: Formula) {
+      this.props.formula = formula;
       this.validate();
    }
    changeData(chartData: ChartData[]) {
@@ -89,10 +83,6 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
    public validate(): void {
       this._isValid = false;
       if (Guard.isEmpty(this.props.name).succeeded) throw new EmptyStringError("The name of GrowthReferenceChart can't be empty.");
-      if (!isValidFormula(this.props.valueFormula))
-         throw new ArgumentInvalidException("The valueFormula is not valid. Please provide a valid formula for the GrowthReferenceChart");
-      if (this.props.formulaVariable.some((variable) => Guard.isEmpty(variable).succeeded))
-         throw new EmptyStringError("The formula Variable name can't be empty.");
       this._isValid = true;
    }
 
@@ -102,8 +92,9 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
          const unitCodeRes = UnitCode.create(createProps.unitCode);
          const chartDataRes = createProps.data.map((chartData) => ChartData.create(chartData));
          const chartInterpreterRes = createProps.chartInterpreters.map((chartInterpreter) => ChartInterpreter.create(chartInterpreter));
-         const combinedRes = Result.combine([codeRes, unitCodeRes, ...chartDataRes, ...chartInterpreterRes]);
-         if (combinedRes.isFailure) return Result.fail(String(combinedRes.err));
+         const formulaRes = Formula.create(createProps.formula);
+         const combinedRes = Result.combine([codeRes, unitCodeRes, formulaRes, ...chartDataRes, ...chartInterpreterRes]);
+         if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, GrowthReferenceChart.name));
 
          const growthReferenceChart = new GrowthReferenceChart({
             id,
@@ -111,8 +102,7 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
                name: createProps.name,
                code: codeRes.val,
                unitCode: unitCodeRes.val,
-               formulaVariable: createProps.formulaVariable,
-               valueFormula: createProps.valueFormula,
+               formula: formulaRes.val,
                sex: createProps.sex as Sex,
                chartInterpreters: chartInterpreterRes.map((valRes) => valRes.val),
                data: chartDataRes.map((chartData) => chartData.val),

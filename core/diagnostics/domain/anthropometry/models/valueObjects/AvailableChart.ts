@@ -1,31 +1,32 @@
-import { ArgumentInvalidException, EmptyStringError, Guard, handleError, isValidCondition, Result, SystemCode, ValueObject } from "@shared";
+import {
+   formatError,
+   handleError,
+   Result,
+   SystemCode,
+   ValueObject,
+} from "@shared";
+import { Condition, ICondition } from "../../../common";
 
 export interface IAvailableChart {
    chartCode: SystemCode;
-   condition: string;
-   conditionVariables: string[];
+   condition: Condition;
 }
 
 export interface CreateAvailableChart {
    chartCode: string;
-   condition: string;
-   conditionVariables: string[];
+   condition: ICondition;
 }
 
 export class AvailableChart extends ValueObject<IAvailableChart> {
-   protected validate(props: Readonly<IAvailableChart>): void {
-      if (!isValidCondition(props.condition))
-         throw new ArgumentInvalidException("The AvailableChart condition is invalid. Please provide an valid condition.");
-      if (props.conditionVariables.some((varialbe) => Guard.isEmpty(varialbe).succeeded))
-         throw new EmptyStringError("The Available Chart condition variable can't be empty.");
-   }
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   protected validate(_props: Readonly<IAvailableChart>): void {}
    static create(createProps: CreateAvailableChart): Result<AvailableChart> {
       try {
          const codeRes = SystemCode.create(createProps.chartCode);
-         if (codeRes.isFailure) return Result.fail(String(codeRes.err));
-         return Result.ok(
-            new AvailableChart({ chartCode: codeRes.val, condition: createProps.condition, conditionVariables: createProps.conditionVariables }),
-         );
+         const conditionRes = Condition.create(createProps.condition);
+         const combinedRes = Result.combine([conditionRes, codeRes]);
+         if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, AvailableChart.name));
+         return Result.ok(new AvailableChart({ chartCode: codeRes.val, condition: conditionRes.val }));
       } catch (e: unknown) {
          return handleError(e);
       }

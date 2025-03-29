@@ -9,8 +9,8 @@ import { Guard, handleError, NegativeValueError, Result, ValueObject } from "@sh
  */
 export interface IAnthropometricData {
    weight?: number;
-   height?: number;
-   length?: number;
+   lengthOrHeight?: number;
+   isRecumbent: boolean;
    armCircumference?: number;
    headCircumference?: number;
 }
@@ -20,7 +20,7 @@ export class AnthropometricData extends ValueObject<IAnthropometricData> {
       if (props.weight && Guard.isNegative(props.weight).succeeded) {
          throw new NegativeValueError("The patient height must be empty value.");
       }
-      if ((props.height && Guard.isNegative(props.height).succeeded) || (props.length && Guard.isNegative(props.length).succeeded)) {
+      if ((props.lengthOrHeight && Guard.isNegative(props.lengthOrHeight).succeeded)) {
          throw new NegativeValueError("The patient height or length must be negative.");
       }
       if (
