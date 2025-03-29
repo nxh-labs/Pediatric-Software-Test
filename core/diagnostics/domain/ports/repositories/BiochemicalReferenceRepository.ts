@@ -1,5 +1,5 @@
 import { Repository, SystemCode } from "@shared";
-import { BiochemicalReference } from "../../domain/models";
+import { BiochemicalReference } from "../../models";
 
 export interface BiochemicalReferenceRepository extends Repository<BiochemicalReference> {
    getByCode(code: SystemCode): Promise<BiochemicalReference>;

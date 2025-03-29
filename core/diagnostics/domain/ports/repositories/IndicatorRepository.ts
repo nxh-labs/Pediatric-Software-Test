@@ -1,5 +1,5 @@
 import { Repository, SystemCode } from "@shared";
-import { Indicator } from "../../domain/models";
+import { Indicator } from "../../models";
 
 export interface IndicatorRepository extends Repository<Indicator> {
    getAll(): Promise<Indicator[]>;

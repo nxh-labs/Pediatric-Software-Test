@@ -1,5 +1,5 @@
 import { Repository, SystemCode } from "@shared";
-import { AnthropometricMeasure } from "../../domain/models";
+import { AnthropometricMeasure } from "../../models";
 
 export interface AnthropometricMeasureRepository extends Repository<AnthropometricMeasure> {
    getByCode(code: SystemCode): Promise<AnthropometricMeasure>;

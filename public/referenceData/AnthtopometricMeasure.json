@@ -1,0 +1,99 @@
+[
+    {
+        "code": "weight_in_kg",
+        "name": "Poids",
+        "validationRules": [
+            "weight_in_kg >= 0",
+            "age_in_month < 1 && weight_in_kg >= 2 && weight_in_kg <= 10",
+            "age_in_month >= 1 && age_in_month <= 12 && weight_in_kg >= 3 et weight_in_kg <= 15",
+            "age_in_month > 12 et age_in_month <= 60 et weight_in_kg >= 8 et weight_in_kg <= 30",
+            "age_in_month > 60 et age_in_month <= 144 et weight_in_kg >= 15 et weight_in_kg <= 50",
+            "age_in_month > 144 et age_in_month <= 216 et weight_in_kg >= 25 et weight_in_kg <= 90"
+        ],
+        "validationRuleVariables": [
+            "weight_in_kg",
+            "age_in_month"
+        ],
+        "availableUnits": [
+            "kg",
+            "lb"
+        ],
+        "unit": "kg"
+    },
+    {
+        "code": "recumbent_length_in_cm",
+        "name": "Taille couchée",
+        "validationRules": [
+            "recumbent_length_in_cm >= 0",
+            "age_in_month <= 24 && recumbent_length_in_cm >= 45 && recumbent_length_in_cm <= 95",
+            "age_in_month > 24 && !is_sick && !is_disabled && recumbent_length_in_cm >= 0"
+        ],
+        "validationRuleVariables": [
+            "recumbent_length_in_cm",
+            "age_in_month",
+            "is_sick",
+            "is_disabled"
+        ],
+        "availableUnits": [
+            "cm",
+            "m"
+        ],
+        "unit": "cm"
+    },
+    {
+        "code": "standing_height_in_cm",
+        "name": "Taille debout",
+        "validationRules": [
+            "standing_height_in_cm >= 0",
+            "age_in_month > 24 && standing_height_in_cm >= 80 && standing_height_in_cm <= 190",
+            "age_in_month <= 24 && !is_sick && !is_disabled && standing_height_in_cm >= 0"
+        ],
+        "validationRuleVariables": [
+            "standing_height_in_cm",
+            "age_in_month",
+            "is_sick",
+            "is_disabled"
+        ],
+        "availableUnits": [
+            "cm",
+            "m"
+        ],
+        "unit": "cm"
+    },
+    {
+        "code": "muac_in_cm",
+        "name": "Périmètre brachial",
+        "validationRules": [
+            "muac_in_cm >= 0",
+            "age_in_month >= 6 et age_in_month <= 60 et muac_in_cm >= 8 et muac_in_cm <= 22",
+            "age_in_month > 60 et age_in_month <= 216 et muac_in_cm >= 12 et muac_in_cm <= 30"
+        ],
+        "validationRuleVariables": [
+            "muac_in_cm",
+            "age_in_month"
+        ],
+        "availableUnits": [
+            "cm",
+            "mm"
+        ],
+        "unit": "cm"
+    },
+    {
+        "code": "head_circumference_in_cm",
+        "name": "Périmètre crânien",
+        "validationRules": [
+            "head_circumference_in_cm >= 0",
+            "age_in_month < 1 et head_circumference_in_cm >= 30 et head_circumference_in_cm <= 40",
+            "age_in_month >= 1 et age_in_month <= 12 et head_circumference_in_cm >= 35 et head_circumference_in_cm <= 50",
+            "age_in_month > 12 et age_in_month <= 60 et head_circumference_in_cm >= 45 et head_circumference_in_cm <= 55"
+        ],
+        "validationRuleVariables": [
+            "head_circumference_in_cm",
+            "age_in_month"
+        ],
+        "availableUnits": [
+            "cm"
+        ],
+        "unit": "cm"
+    }
+]
