@@ -1,6 +1,6 @@
 import { AggregateID, EmptyStringError, Entity, EntityPropsBaseType, Guard, handleError, Result, SystemCode } from "@shared";
 import { AvailableChart, CreateAvailableChart, IAvailableChart } from "../valueObjects";
-import { Formula, IFormula } from "../../../common";
+import { Condition, Formula, ICondition, IFormula } from "../../../common";
 
 /**
  * `Indicator`
@@ -20,6 +20,7 @@ export interface IIndicator extends EntityPropsBaseType {
    axeX: Formula;
    axeY: Formula;
    availableRefCharts: AvailableChart[];
+   usageConditions: Condition; // Ici puisque l'utilisation de l'indicateur peut aussi dependre du tranche d'age
 }
 export interface CreateIndicatorProps {
    code: string;
@@ -28,6 +29,7 @@ export interface CreateIndicatorProps {
    axeX: IFormula;
    axeY: IFormula;
    availableRefCharts: CreateAvailableChart[];
+   usageCondition: ICondition;
 }
 export class Indicator extends Entity<IIndicator> {
    getName(): string {
@@ -48,6 +50,9 @@ export class Indicator extends Entity<IIndicator> {
    getAvailableCharts(): IAvailableChart[] {
       return this.props.availableRefCharts.map((charts) => charts.unpack());
    }
+   getUsageCondition(): ICondition {
+      return this.props.usageConditions.unpack();
+   }
    changeName(name: string) {
       this.props.name = name;
       this.validate();
@@ -65,6 +70,10 @@ export class Indicator extends Entity<IIndicator> {
       this.props.availableRefCharts = availableCharts;
       this.validate();
    }
+   changeUsageCondition(condition: Condition) {
+      this.props.usageConditions = condition;
+      this.validate();
+   }
    public validate(): void {
       this._isValid = false;
       if (Guard.isEmpty(this.props.name).succeeded) throw new EmptyStringError("The name of Indicator can't be empty.");
@@ -78,7 +87,15 @@ export class Indicator extends Entity<IIndicator> {
          const availableRefChartsRes = createIndicatorProps.availableRefCharts.map(AvailableChart.create);
          const axeXFormulaRes = Formula.create(createIndicatorProps.axeX);
          const axeYFormulaRes = Formula.create(createIndicatorProps.axeY);
-         const combineRes = Result.combine([codeRes, axeXFormulaRes, axeYFormulaRes, ...neededMeasureCodesRes, ...availableRefChartsRes]);
+         const conditionRes = Condition.create(createIndicatorProps.usageCondition);
+         const combineRes = Result.combine([
+            codeRes,
+            axeXFormulaRes,
+            axeYFormulaRes,
+            conditionRes,
+            ...neededMeasureCodesRes,
+            ...availableRefChartsRes,
+         ]);
          if (combineRes.isFailure) return Result.fail(String(combineRes.err));
          return Result.ok(
             new Indicator({
@@ -90,6 +107,7 @@ export class Indicator extends Entity<IIndicator> {
                   axeX: axeXFormulaRes.val,
                   axeY: axeYFormulaRes.val,
                   availableRefCharts: availableRefChartsRes.map((res) => res.val),
+                  usageConditions: conditionRes.val,
                },
             }),
          );

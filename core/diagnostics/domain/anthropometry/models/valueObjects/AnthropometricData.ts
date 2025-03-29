@@ -1,4 +1,4 @@
-import { Guard, handleError, NegativeValueError, Result, ValueObject } from "@shared";
+import { formatError, Guard, handleError, NegativeValueError, Result, SystemCode, UnitCode, ValueObject } from "@shared";
 /**
  * @interface IAnthropometricData contain all patient anthropometric data
  * @property weight - The weight in kg
@@ -7,32 +7,36 @@ import { Guard, handleError, NegativeValueError, Result, ValueObject } from "@sh
  * @property armCircumference - The ArmCircumference in cm
  * @property headCircumference - The headCircumference in cm
  */
-export interface IAnthropometricData {
-   weight?: number;
-   lengthOrHeight?: number;
-   isRecumbent: boolean;
-   armCircumference?: number;
-   headCircumference?: number;
-}
 
+type AnthropEntry = {
+   code: SystemCode;
+   value: number;
+   unit: UnitCode;
+};
+// LE model a été mise a jour pour passer a un tableau de donnée anthropometric 
+export type IAnthropometricData = AnthropEntry[];
+export type CreateAnthropometricData = {
+   anthropometricMeasures: { code: string; value: number; unit: string }[];
+};
 export class AnthropometricData extends ValueObject<IAnthropometricData> {
    protected validate(props: Readonly<IAnthropometricData>): void {
-      if (props.weight && Guard.isNegative(props.weight).succeeded) {
-         throw new NegativeValueError("The patient height must be empty value.");
-      }
-      if ((props.lengthOrHeight && Guard.isNegative(props.lengthOrHeight).succeeded)) {
-         throw new NegativeValueError("The patient height or length must be negative.");
-      }
-      if (
-         (props.armCircumference && Guard.isNegative(props.armCircumference).succeeded) ||
-         (props.headCircumference && Guard.isNegative(props.headCircumference).succeeded)
-      ) {
-         throw new NegativeValueError("The armCircumference or headCircumference must be negative value.");
+      if (props.some((anthrop) => Guard.isNegative(anthrop.value).succeeded)) {
+         throw new NegativeValueError("The anthropometric measure value can't be negative.");
       }
    }
-   static create(props: IAnthropometricData): Result<AnthropometricData> {
+   static create(createAnthropometricProps: CreateAnthropometricData): Result<AnthropometricData> {
       try {
-         return Result.ok(new AnthropometricData(props));
+         const anthropometricMeasuresRes = createAnthropometricProps.anthropometricMeasures.map((anthropMeasure): Result<AnthropEntry> => {
+            const codeRes = SystemCode.create(anthropMeasure.code);
+            const unitRes = UnitCode.create(anthropMeasure.unit);
+            const combinedRes = Result.combine([codeRes, unitRes]);
+            if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, AnthropometricData.name));
+            return Result.ok({ code: codeRes.val, value: anthropMeasure.value, unit: unitRes.val });
+         });
+         const combinedRes = Result.combine(anthropometricMeasuresRes);
+         if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, AnthropometricData.name));
+
+         return Result.ok(new AnthropometricData(anthropometricMeasuresRes.map((res) => res.val)));
       } catch (e: unknown) {
          return handleError(e);
       }

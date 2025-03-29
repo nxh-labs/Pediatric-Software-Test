@@ -10,7 +10,7 @@ import {
    Result,
    Sex,
 } from "@shared";
-import { AnthropometricData, IAnthropometricData, DAY_IN_MONTHS, DAY_IN_YEARS, MAX_AGE_IN_PEDIATRIC } from "../../../anthropometry";
+import { AnthropometricData, DAY_IN_MONTHS, DAY_IN_YEARS, MAX_AGE_IN_PEDIATRIC, CreateAnthropometricData } from "../../../anthropometry";
 import { BiologicalTestResult, CreateBiologicalTestResult } from "../../../biological";
 import { ClinicalData, IClinicalData } from "../../../clinical";
 
@@ -26,7 +26,7 @@ export interface IPatientDiagnosticData extends EntityPropsBaseType {
 export type CreatePatientDiagnosticData = {
    sex: "M" | "F" | "O";
    birthday: string;
-   anthropometricData: IAnthropometricData;
+   anthropometricData: CreateAnthropometricData;
    clinicalSigns: IClinicalData;
    biologicalTestResults: CreateBiologicalTestResult[];
 };

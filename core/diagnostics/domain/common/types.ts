@@ -1,5 +1,3 @@
-import { Sex } from "@shared";
-
 export interface ValidateResult {
    isValid: boolean;
    info?: {
@@ -9,10 +7,10 @@ export interface ValidateResult {
       error: string;
    };
 }
-
-export interface EvaluationContext {
+type ContextType = { [key: string]: number | string };
+export interface EvaluationContext extends ContextType {
    age_in_month: number;
    age_in_year: number;
    age_in_day: number;
-   sex: Sex;
+   sex: "M" | "F";
 }
