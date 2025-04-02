@@ -11,7 +11,7 @@ import {
    SystemCode,
    UnitCode,
 } from "@shared";
-import { ChartData, ChartInterpreter, CreateChartInterpreter, IChartData, IChartInterpreter } from "./../valueObjects";
+import { ChartData, IChartData } from "./../valueObjects";
 import { Formula, IFormula } from "../../../common";
 
 export interface IGrowthReferenceChart extends EntityPropsBaseType {
@@ -21,16 +21,14 @@ export interface IGrowthReferenceChart extends EntityPropsBaseType {
    unitCode: UnitCode;
    formula: Formula;
    data: ChartData[];
-   chartInterpreters: ChartInterpreter[];
 }
 export interface CreateGrowthReferenceChartProps {
    code: string;
    name: string;
    sex: "M" | "F";
    unitCode: string;
-   formula: IFormula;
+   formula: IFormula; // Cette propriete n'a plus sa place ici 
    data: IChartData[];
-   chartInterpreters: CreateChartInterpreter[];
 }
 export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
    getCode(): string {
@@ -50,9 +48,6 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
    }
    getChartData(): IChartData[] {
       return this.props.data.map((chartData) => chartData.unpack());
-   }
-   getInterpreter(): IChartInterpreter[] {
-      return this.props.chartInterpreters.map((chartInterpreter) => chartInterpreter.unpack());
    }
 
    changeName(name: string) {
@@ -75,10 +70,6 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
       this.props.data = chartData;
       this.validate();
    }
-   changeInterpreter(chartInterpreters: ChartInterpreter[]) {
-      this.props.chartInterpreters = chartInterpreters;
-      this.validate();
-   }
 
    public validate(): void {
       this._isValid = false;
@@ -91,9 +82,8 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
          const codeRes = SystemCode.create(createProps.code);
          const unitCodeRes = UnitCode.create(createProps.unitCode);
          const chartDataRes = createProps.data.map((chartData) => ChartData.create(chartData));
-         const chartInterpreterRes = createProps.chartInterpreters.map((chartInterpreter) => ChartInterpreter.create(chartInterpreter));
          const formulaRes = Formula.create(createProps.formula);
-         const combinedRes = Result.combine([codeRes, unitCodeRes, formulaRes, ...chartDataRes, ...chartInterpreterRes]);
+         const combinedRes = Result.combine([codeRes, unitCodeRes, formulaRes, ...chartDataRes]);
          if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, GrowthReferenceChart.name));
 
          const growthReferenceChart = new GrowthReferenceChart({
@@ -104,7 +94,6 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
                unitCode: unitCodeRes.val,
                formula: formulaRes.val,
                sex: createProps.sex as Sex,
-               chartInterpreters: chartInterpreterRes.map((valRes) => valRes.val),
                data: chartDataRes.map((chartData) => chartData.val),
             },
          });

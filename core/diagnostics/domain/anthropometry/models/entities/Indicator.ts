@@ -1,6 +1,24 @@
-import { AggregateID, EmptyStringError, Entity, EntityPropsBaseType, Guard, handleError, Result, SystemCode } from "@shared";
-import { AvailableChart, CreateAvailableChart, IAvailableChart } from "../valueObjects";
+import {
+   AggregateID,
+   ArgumentOutOfRangeException,
+   EmptyStringError,
+   Entity,
+   EntityPropsBaseType,
+   Guard,
+   handleError,
+   Result,
+   SystemCode,
+} from "@shared";
+import {
+   AvailableChart,
+   CreateAvailableChart,
+   CreateIndicatorInterpreter,
+   IAvailableChart,
+   IIndicatorInterpreter,
+   IndicatorInterpreter,
+} from "../valueObjects";
 import { Condition, Formula, ICondition, IFormula } from "../../../common";
+import { GrowthIndicatorRange } from "../constants";
 
 /**
  * `Indicator`
@@ -21,6 +39,7 @@ export interface IIndicator extends EntityPropsBaseType {
    axeY: Formula;
    availableRefCharts: AvailableChart[];
    usageConditions: Condition; // Ici puisque l'utilisation de l'indicateur peut aussi dependre du tranche d'age
+   interpretations: IndicatorInterpreter[];
 }
 export interface CreateIndicatorProps {
    code: string;
@@ -30,6 +49,7 @@ export interface CreateIndicatorProps {
    axeY: IFormula;
    availableRefCharts: CreateAvailableChart[];
    usageCondition: ICondition;
+   interpretations: CreateIndicatorInterpreter[];
 }
 export class Indicator extends Entity<IIndicator> {
    getName(): string {
@@ -53,6 +73,9 @@ export class Indicator extends Entity<IIndicator> {
    getUsageCondition(): ICondition {
       return this.props.usageConditions.unpack();
    }
+   getInterpretations(): IIndicatorInterpreter[] {
+      return this.props.interpretations.map((indicatorInterpretation) => indicatorInterpretation.unpack());
+   }
    changeName(name: string) {
       this.props.name = name;
       this.validate();
@@ -74,12 +97,29 @@ export class Indicator extends Entity<IIndicator> {
       this.props.usageConditions = condition;
       this.validate();
    }
+   changeInterpretations(interpretations: IndicatorInterpreter[]) {
+      this.props.interpretations = interpretations;
+      this.validate();
+   }
    public validate(): void {
       this._isValid = false;
       if (Guard.isEmpty(this.props.name).succeeded) throw new EmptyStringError("The name of Indicator can't be empty.");
+      if (Object.values(GrowthIndicatorRange).length < this.props.interpretations.length)
+         throw new ArgumentOutOfRangeException("La liste des interpretations possibles ne peut depasser les ranges de valeurs possibles.");
+      this.validateIfInterpretationRangeIsUnique();
       this._isValid = true;
    }
-
+   private validateIfInterpretationRangeIsUnique() {
+      const interpretationRange = new Set();
+      for (const interpretation of this.props.interpretations) {
+         const range = interpretation.unpack().range;
+         if (interpretationRange.has(range)) {
+            throw new ArgumentOutOfRangeException("On ne peut avoir qu'une seule interpretation pour un range.");
+         } else {
+            interpretationRange.add(range);
+         }
+      }
+   }
    static create(createIndicatorProps: CreateIndicatorProps, id: AggregateID): Result<Indicator> {
       try {
          const codeRes = SystemCode.create(createIndicatorProps.code);
@@ -88,6 +128,7 @@ export class Indicator extends Entity<IIndicator> {
          const axeXFormulaRes = Formula.create(createIndicatorProps.axeX);
          const axeYFormulaRes = Formula.create(createIndicatorProps.axeY);
          const conditionRes = Condition.create(createIndicatorProps.usageCondition);
+         const interpretationsRes = createIndicatorProps.interpretations.map(IndicatorInterpreter.create);
          const combineRes = Result.combine([
             codeRes,
             axeXFormulaRes,
@@ -95,6 +136,7 @@ export class Indicator extends Entity<IIndicator> {
             conditionRes,
             ...neededMeasureCodesRes,
             ...availableRefChartsRes,
+            ...interpretationsRes,
          ]);
          if (combineRes.isFailure) return Result.fail(String(combineRes.err));
          return Result.ok(
@@ -108,6 +150,7 @@ export class Indicator extends Entity<IIndicator> {
                   axeY: axeYFormulaRes.val,
                   availableRefCharts: availableRefChartsRes.map((res) => res.val),
                   usageConditions: conditionRes.val,
+                  interpretations: interpretationsRes.map((res) => res.val),
                },
             }),
          );
