@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 
 # React Component Preview
-previewConfig.json
+/previewConfig.json
+/yarn.lock
