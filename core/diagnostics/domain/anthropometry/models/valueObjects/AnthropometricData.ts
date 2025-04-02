@@ -8,7 +8,7 @@ import { formatError, Guard, handleError, NegativeValueError, Result, SystemCode
  * @property headCircumference - The headCircumference in cm
  */
 
-type AnthropEntry = {
+export type AnthropEntry = {
    code: SystemCode;
    value: number;
    unit: UnitCode;

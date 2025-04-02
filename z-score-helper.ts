@@ -203,7 +203,6 @@ function anthroZscoreAdjusted(
 	sex = assertValidSex(sex);
 	ageInDays = assertValidAgeInDays(ageInDays);
 	growthstandards = assertGrowthstandards(growthstandards);
-
 	// Les mesures <= 0 deviennent NaN
 	measure = measure.map(m => (m <= 0 ? NaN : m));
 

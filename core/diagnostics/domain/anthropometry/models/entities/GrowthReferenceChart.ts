@@ -8,26 +8,23 @@ import {
    handleError,
    Result,
    Sex,
-   SystemCode,
-   UnitCode,
+   SystemCode
 } from "@shared";
 import { ChartData, IChartData } from "./../valueObjects";
-import { Formula, IFormula } from "../../../common";
+import { GrowthStandard } from "../constants";
 
 export interface IGrowthReferenceChart extends EntityPropsBaseType {
    code: SystemCode;
    name: string;
+   standard: GrowthStandard
    sex: Sex;
-   unitCode: UnitCode;
-   formula: Formula;
    data: ChartData[];
 }
 export interface CreateGrowthReferenceChartProps {
    code: string;
    name: string;
    sex: "M" | "F";
-   unitCode: string;
-   formula: IFormula; // Cette propriete n'a plus sa place ici 
+   standard: GrowthStandard
    data: IChartData[];
 }
 export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
@@ -40,11 +37,8 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
    getSex(): Sex {
       return this.props.sex;
    }
-   getUnitCode(): string {
-      return this.props.unitCode.unpack();
-   }
-   getFormula(): IFormula {
-      return this.props.formula.unpack();
+   getStandard(): GrowthStandard {
+      return this.props.standard
    }
    getChartData(): IChartData[] {
       return this.props.data.map((chartData) => chartData.unpack());
@@ -58,13 +52,9 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
       this.props.sex = sex;
       this.validate();
    }
-   changeUnitCode(unitCode: UnitCode) {
-      this.props.unitCode = unitCode;
-      this.validate();
-   }
-   changeFormula(formula: Formula) {
-      this.props.formula = formula;
-      this.validate();
+   changeStandard(standard: GrowthStandard) {
+      this.props.standard = standard
+      this.validate()
    }
    changeData(chartData: ChartData[]) {
       this.props.data = chartData;
@@ -80,10 +70,8 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
    static create(createProps: CreateGrowthReferenceChartProps, id: AggregateID): Result<GrowthReferenceChart> {
       try {
          const codeRes = SystemCode.create(createProps.code);
-         const unitCodeRes = UnitCode.create(createProps.unitCode);
          const chartDataRes = createProps.data.map((chartData) => ChartData.create(chartData));
-         const formulaRes = Formula.create(createProps.formula);
-         const combinedRes = Result.combine([codeRes, unitCodeRes, formulaRes, ...chartDataRes]);
+         const combinedRes = Result.combine([codeRes, ...chartDataRes]);
          if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, GrowthReferenceChart.name));
 
          const growthReferenceChart = new GrowthReferenceChart({
@@ -91,8 +79,7 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
             props: {
                name: createProps.name,
                code: codeRes.val,
-               unitCode: unitCodeRes.val,
-               formula: formulaRes.val,
+               standard: createProps.standard,
                sex: createProps.sex as Sex,
                data: chartDataRes.map((chartData) => chartData.val),
             },

@@ -1,4 +1,4 @@
-import { GrowthReferenceChart } from "../../models"
+import { GrowthReferenceChart, GrowthStandard, ZScoreComputingStrategyType } from "../../models"
 
 /**
  * Représente les données nécessaires pour le calcul du Z-score.
@@ -13,10 +13,13 @@ export type ZScoreComputingData = {
     growthReferenceChart: GrowthReferenceChart;
 };
 
+
 /**
  * Interface définissant une stratégie de calcul du Z-score.
  */
 export interface ZScoreComputingStrategy {
+    standard: GrowthStandard
+    type: ZScoreComputingStrategyType
     /**
      * Calcule le Z-score à partir des données fournies.
      * 

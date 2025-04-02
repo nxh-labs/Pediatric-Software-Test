@@ -1,15 +1,17 @@
 import { ConditionResult, evaluateCondition, formatError, handleError, Result, SystemCode } from "@shared";
-import { AnthropometricData, Indicator, AnthropometricMeasure, GrowthIndicatorValue } from "../models";
+import { AnthropometricData, Indicator, AnthropometricMeasure, GrowthIndicatorValue, GrowthStandard } from "../models";
 import { IGrowthIndicatorService } from "./interfaces/GrowthIndicatorService";
 import { EvaluationContext } from "../../common";
 import { AnthropometricMeasureRepository, GrowthReferenceChartRepository, IndicatorRepository } from "../ports";
+import { ZScoreComputingStrategy } from "../policies/interfaces/ZScoreComputingStrategy";
 
 export class GrowthIndicatorService implements IGrowthIndicatorService {
    constructor(
       private anthropometricMeasureRepo: AnthropometricMeasureRepository,
       private indicatorRepo: IndicatorRepository,
       private growthChartRepo: GrowthReferenceChartRepository,
-   ) {}
+      private zScoreComputingStrategies: ZScoreComputingStrategy[]
+   ) { }
    /**
     * @method identifyPossibleIndicator -
     * @param data {AnthropometricData} - C'est un tableau des données anthropométriques a utilise
@@ -51,18 +53,19 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
          return handleError(e);
       }
    }
-   async calculateIndicator(data: AnthropometricData, indicatorCode: SystemCode, context: EvaluationContext): Promise<Result<GrowthIndicatorValue>> {
-     try {
-        const possibleIndicators = await this.identifyPossibleIndicator(data,context);
-        if(possibleIndicators.isFailure) return Result.fail(formatError(possibleIndicators,GrowthIndicatorService.name));
-        const indicator = possibleIndicators.val.find(indicator => indicator.getCode() === indicatorCode.unpack())
-        if(!indicator) return Result.fail("On ne peut pas calculer cette indicateur pour ce patient");
-        
-     } catch (e:unknown) {
-      return handleError(e)
-     }
+   async calculateIndicator(data: AnthropometricData, indicatorCode: SystemCode, context: EvaluationContext, standard: GrowthStandard = GrowthStandard.OMS): Promise<Result<GrowthIndicatorValue>> {
+      try {
+         const possibleIndicators = await this.identifyPossibleIndicator(data, context);
+         if (possibleIndicators.isFailure) return Result.fail(formatError(possibleIndicators, GrowthIndicatorService.name));
+         const indicator = possibleIndicators.val.find(indicator => indicator.getCode() === indicatorCode.unpack())
+         if (!indicator) return Result.fail(`On ne peut pas calculer cette indicateur (${indicatorCode})pour ce patient`);
+      
+
+      } catch (e: unknown) {
+         return handleError(e)
+      }
    }
-   calculateAllIndicators(data: AnthropometricData, context: EvaluationContext): Promise<Result<GrowthIndicatorValue[]>> {
+   calculateAllIndicators(data: AnthropometricData, context: EvaluationContext, standard: GrowthStandard = GrowthStandard.OMS): Promise<Result<GrowthIndicatorValue[]>> {
       throw new Error("Method not implemented.");
    }
 }

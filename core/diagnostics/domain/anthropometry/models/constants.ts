@@ -66,10 +66,10 @@ export const DAY_IN_YEARS = 365.25;
 export const MONTH_IN_YEARS = 12;
 
 /**
- * Âge maximal en pédiatrie (18 ans).
+ * Âge maximal en pédiatrie (19 ans).
  * @constant
  */
-export const MAX_AGE_IN_PEDIATRIC = 18;
+export const MAX_AGE_IN_PEDIATRIC = 19; 
 
 /**
  * @enum AnthroSystemCodes
@@ -116,3 +116,15 @@ export enum AnthroSystemCodes {
   AGE_IN_MONTH = "age_in_month",
   SEX = 'sex'
 }
+
+export const MAX_WEIGHT = 58.0
+export const MIN_WEIGHT = 0.9
+export const MIN_LENHEI = 38.0
+export const MAX_LENHEI = 150.0
+
+export const MAX_AGE_TO_USE_AGE_IN_DAY = DAY_IN_YEARS * 5
+export enum ZScoreComputingStrategyType {
+  AGEBASED = "age_based",
+  LENHEIBASED = 'lenhei_based'
+}
+export const DAY_IN_TWO_YEARS= Math.round(DAY_IN_YEARS * 2)

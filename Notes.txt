@@ -1,0 +1,1 @@
+J'ai eu l'idee d'ajouter a notre anthro module : un service qui va essayer d'ajuster les données anthro disponibles et les faire sortir sous forme d'un object pres a etre utiliser et contenant presque tous les variables a utilsier par les modules pour l'evaluation des formules sous forme de stirng 

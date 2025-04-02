@@ -18,7 +18,7 @@ import {
    IndicatorInterpreter,
 } from "../valueObjects";
 import { Condition, Formula, ICondition, IFormula } from "../../../common";
-import { GrowthIndicatorRange } from "../constants";
+import { GrowthIndicatorRange, ZScoreComputingStrategyType } from "../constants";
 
 /**
  * `Indicator`
@@ -40,6 +40,7 @@ export interface IIndicator extends EntityPropsBaseType {
    availableRefCharts: AvailableChart[];
    usageConditions: Condition; // Ici puisque l'utilisation de l'indicateur peut aussi dependre du tranche d'age
    interpretations: IndicatorInterpreter[];
+   zScoreComputingStrategy: ZScoreComputingStrategyType
 }
 export interface CreateIndicatorProps {
    code: string;
@@ -50,6 +51,7 @@ export interface CreateIndicatorProps {
    availableRefCharts: CreateAvailableChart[];
    usageCondition: ICondition;
    interpretations: CreateIndicatorInterpreter[];
+   zScoreComputingStrategy: ZScoreComputingStrategyType
 }
 export class Indicator extends Entity<IIndicator> {
    getName(): string {
@@ -76,6 +78,9 @@ export class Indicator extends Entity<IIndicator> {
    getInterpretations(): IIndicatorInterpreter[] {
       return this.props.interpretations.map((indicatorInterpretation) => indicatorInterpretation.unpack());
    }
+   getZScoreComputingStrategyType(): ZScoreComputingStrategyType {
+      return this.props.zScoreComputingStrategy
+   }
    changeName(name: string) {
       this.props.name = name;
       this.validate();
@@ -100,6 +105,10 @@ export class Indicator extends Entity<IIndicator> {
    changeInterpretations(interpretations: IndicatorInterpreter[]) {
       this.props.interpretations = interpretations;
       this.validate();
+   }
+   changeZScoreComputingStrategyType(strategyType: ZScoreComputingStrategyType) {
+      this.props.zScoreComputingStrategy = strategyType
+      this.validate()
    }
    public validate(): void {
       this._isValid = false;
@@ -151,6 +160,7 @@ export class Indicator extends Entity<IIndicator> {
                   availableRefCharts: availableRefChartsRes.map((res) => res.val),
                   usageConditions: conditionRes.val,
                   interpretations: interpretationsRes.map((res) => res.val),
+                  zScoreComputingStrategy: createIndicatorProps.zScoreComputingStrategy
                },
             }),
          );
