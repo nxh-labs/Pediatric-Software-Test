@@ -40,7 +40,7 @@ export interface IIndicator extends EntityPropsBaseType {
    availableRefCharts: AvailableChart[];
    usageConditions: Condition; // Ici puisque l'utilisation de l'indicateur peut aussi dependre du tranche d'age
    interpretations: IndicatorInterpreter[];
-   zScoreComputingStrategy: ZScoreComputingStrategyType
+   zScoreComputingStrategy: ZScoreComputingStrategyType;
 }
 export interface CreateIndicatorProps {
    code: string;
@@ -51,7 +51,7 @@ export interface CreateIndicatorProps {
    availableRefCharts: CreateAvailableChart[];
    usageCondition: ICondition;
    interpretations: CreateIndicatorInterpreter[];
-   zScoreComputingStrategy: ZScoreComputingStrategyType
+   zScoreComputingStrategy: ZScoreComputingStrategyType;
 }
 export class Indicator extends Entity<IIndicator> {
    getName(): string {
@@ -79,7 +79,7 @@ export class Indicator extends Entity<IIndicator> {
       return this.props.interpretations.map((indicatorInterpretation) => indicatorInterpretation.unpack());
    }
    getZScoreComputingStrategyType(): ZScoreComputingStrategyType {
-      return this.props.zScoreComputingStrategy
+      return this.props.zScoreComputingStrategy;
    }
    changeName(name: string) {
       this.props.name = name;
@@ -107,8 +107,8 @@ export class Indicator extends Entity<IIndicator> {
       this.validate();
    }
    changeZScoreComputingStrategyType(strategyType: ZScoreComputingStrategyType) {
-      this.props.zScoreComputingStrategy = strategyType
-      this.validate()
+      this.props.zScoreComputingStrategy = strategyType;
+      this.validate();
    }
    public validate(): void {
       this._isValid = false;
@@ -160,7 +160,7 @@ export class Indicator extends Entity<IIndicator> {
                   availableRefCharts: availableRefChartsRes.map((res) => res.val),
                   usageConditions: conditionRes.val,
                   interpretations: interpretationsRes.map((res) => res.val),
-                  zScoreComputingStrategy: createIndicatorProps.zScoreComputingStrategy
+                  zScoreComputingStrategy: createIndicatorProps.zScoreComputingStrategy,
                },
             }),
          );

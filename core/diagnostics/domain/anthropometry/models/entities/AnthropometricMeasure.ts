@@ -1,5 +1,6 @@
 import { AggregateID, EmptyStringError, Entity, EntityPropsBaseType, formatError, Guard, handleError, Result, SystemCode, UnitCode } from "@shared";
 import { IValidationRule, ValidationRule } from "../../../common";
+import { ANTHROPOMETRIC_MEASURE_ERROR } from "../../errors";
 
 export interface IAnthropometricMeasure extends EntityPropsBaseType {
    name: string;
@@ -46,7 +47,7 @@ export class AnthropometricMeasure extends Entity<IAnthropometricMeasure> {
 
    public validate(): void {
       this._isValid = false;
-      if (Guard.isEmpty(this.props.name).succeeded) throw new EmptyStringError("The name of AnthropometricMeasure can't be empty.");
+      if (Guard.isEmpty(this.props.name).succeeded) throw new EmptyStringError(ANTHROPOMETRIC_MEASURE_ERROR.VALIDATION.INVALID_NAME.message);
       this._isValid = true;
    }
 

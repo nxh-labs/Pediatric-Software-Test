@@ -1,7 +1,6 @@
 import { IAnthroComputingHelper } from "./interfaces/AnthroComputingHelper";
 
 export class AnthroComputingHelper implements IAnthroComputingHelper {
-
    computeZScore(y: number, L: number, M: number, S: number): number {
       return (Math.pow(y / M, L) - 1) / (M * S);
    }
@@ -31,9 +30,6 @@ export class AnthroComputingHelper implements IAnthroComputingHelper {
    }
 
    roundUpAge(age_in_day: number): number {
-      return Math.ceil(age_in_day)
-   }
-   fixedLenHei(lenHei_in_cm: number): number {
-      throw new Error("Method not implemented.");
+      return Math.ceil(age_in_day);
    }
 }

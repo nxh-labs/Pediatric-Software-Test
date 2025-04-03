@@ -13,7 +13,7 @@ export type AnthropEntry = {
    value: number;
    unit: UnitCode;
 };
-// LE model a été mise a jour pour passer a un tableau de donnée anthropometric 
+// LE model a été mise a jour pour passer a un tableau de donnée anthropometric
 export type IAnthropometricData = AnthropEntry[];
 export type CreateAnthropometricData = {
    anthropometricMeasures: { code: string; value: number; unit: string }[];

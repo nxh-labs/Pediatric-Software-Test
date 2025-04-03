@@ -1,22 +1,11 @@
-import {
-   AggregateID,
-   EmptyStringError,
-   Entity,
-   EntityPropsBaseType,
-   formatError,
-   Guard,
-   handleError,
-   Result,
-   Sex,
-   SystemCode
-} from "@shared";
+import { AggregateID, EmptyStringError, Entity, EntityPropsBaseType, formatError, Guard, handleError, Result, Sex, SystemCode } from "@shared";
 import { ChartData, IChartData } from "./../valueObjects";
 import { GrowthStandard } from "../constants";
 
 export interface IGrowthReferenceChart extends EntityPropsBaseType {
    code: SystemCode;
    name: string;
-   standard: GrowthStandard
+   standard: GrowthStandard;
    sex: Sex;
    data: ChartData[];
 }
@@ -24,7 +13,7 @@ export interface CreateGrowthReferenceChartProps {
    code: string;
    name: string;
    sex: "M" | "F";
-   standard: GrowthStandard
+   standard: GrowthStandard;
    data: IChartData[];
 }
 export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
@@ -38,7 +27,7 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
       return this.props.sex;
    }
    getStandard(): GrowthStandard {
-      return this.props.standard
+      return this.props.standard;
    }
    getChartData(): IChartData[] {
       return this.props.data.map((chartData) => chartData.unpack());
@@ -53,8 +42,8 @@ export class GrowthReferenceChart extends Entity<IGrowthReferenceChart> {
       this.validate();
    }
    changeStandard(standard: GrowthStandard) {
-      this.props.standard = standard
-      this.validate()
+      this.props.standard = standard;
+      this.validate();
    }
    changeData(chartData: ChartData[]) {
       this.props.data = chartData;

@@ -1,10 +1,4 @@
-import {
-   formatError,
-   handleError,
-   Result,
-   SystemCode,
-   ValueObject,
-} from "@shared";
+import { formatError, handleError, Result, SystemCode, ValueObject } from "@shared";
 import { Condition, ICondition } from "../../../common";
 
 export interface IAvailableChart {

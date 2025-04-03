@@ -17,18 +17,18 @@ import { GrowthReferenceChart, GrowthStandard, Indicator } from "../../models";
  * - Supporting multiple growth standards (WHO, CDC, etc.)
  */
 export interface IZScoreCalculationService {
-    /**
-     * Calculates the z-score for a given anthropometric measurement using reference data.
-     * @param {AnthropometricVariableObject} data - The anthropometric measurements to evaluate
-     * @param {Indicator} indicator - The growth indicator being calculated
-     * @param {GrowthReferenceChart} chart - The reference chart to use for calculations
-     * @param {GrowthStandard} standard - The growth standard being applied
-     * @returns {Promise<Result<number>>} The calculated z-score value
-     */
-    calculateZScore(
-        data: AnthropometricVariableObject, 
-        indicator: Indicator,
-        chart: GrowthReferenceChart,
-        standard: GrowthStandard
-    ): Promise<Result<number>>;
+   /**
+    * Calculates the z-score for a given anthropometric measurement using reference data.
+    * @param {AnthropometricVariableObject} data - The anthropometric measurements to evaluate
+    * @param {Indicator} indicator - The growth indicator being calculated
+    * @param {GrowthReferenceChart} chart - The reference chart to use for calculations
+    * @param {GrowthStandard} standard - The growth standard being applied
+    * @returns {Promise<Result<number>>} The calculated z-score value
+    */
+   calculateZScore(
+      data: AnthropometricVariableObject,
+      indicator: Indicator,
+      chart: GrowthReferenceChart,
+      standard: GrowthStandard,
+   ): Promise<Result<number>>;
 }

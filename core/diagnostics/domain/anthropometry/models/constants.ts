@@ -6,9 +6,9 @@
  * @property CDC - Centers for Disease Control and Prevention
  */
 export enum GrowthStandard {
-  OMS = "oms",
-  NCHS = "nchs",
-  CDC = "cdc",
+   OMS = "oms",
+   NCHS = "nchs",
+   CDC = "cdc",
 }
 
 /**
@@ -18,8 +18,8 @@ export enum GrowthStandard {
  * @property CURVE - Standards basés sur des courbes de croissance.
  */
 export enum StandardShape {
-  TABLE = "growth_table",
-  CURVE = "growth_curve",
+   TABLE = "growth_table",
+   CURVE = "growth_curve",
 }
 
 /**
@@ -36,15 +36,15 @@ export enum StandardShape {
  * @property BELOW_M4 - En dessous de -4 écarts-types.
  */
 export enum GrowthIndicatorRange {
-  ABOVE_4 = "above +4",
-  ABOVE_3 = "above +3",
-  ABOVE_2 = "above +2",
-  ABOVE_1 = "above +1",
-  MEDIAN = "0",
-  BELOW_M1 = "below -1",
-  BELOW_M2 = "below -2",
-  BELOW_M3 = "below -3",
-  BELOW_M4 = "below -4",
+   ABOVE_4 = "above +4",
+   ABOVE_3 = "above +3",
+   ABOVE_2 = "above +2",
+   ABOVE_1 = "above +1",
+   MEDIAN = "0",
+   BELOW_M1 = "below -1",
+   BELOW_M2 = "below -2",
+   BELOW_M3 = "below -3",
+   BELOW_M4 = "below -4",
 }
 
 /**
@@ -69,7 +69,7 @@ export const MONTH_IN_YEARS = 12;
  * Âge maximal en pédiatrie (19 ans).
  * @constant
  */
-export const MAX_AGE_IN_PEDIATRIC = 19; 
+export const MAX_AGE_IN_PEDIATRIC = 19;
 
 /**
  * @enum AnthroSystemCodes
@@ -95,36 +95,36 @@ export const MAX_AGE_IN_PEDIATRIC = 19;
  * @property AGE_IN_MONTH - Âge exprimé en mois.
  */
 export enum AnthroSystemCodes {
-  HEIGHT = "height",
-  LENGTH = "length",
-  LENHEI = "lenhei",
-  WEIGHT = "weight",
-  BMI = "bmi",
-  HEAD_CIRCUMFERENCE = "head_circumference",
-  MUAC = "muac",
-  TSF = "tsf",
-  SSF = "ssf",
-  WFLH = "wflh",
-  WFA = "wfa",
-  HFA = "hfa",
-  BMI_FOR_AGE = "bmi_for_age",
-  MUAC_FOR_AGE = "muac_for_age",
-  TSF_FOR_AGE = "tsf_for_age",
-  SSF_FOR_AGE = "ssf_for_age",
-  HC_FOR_AGE = "hc_for_age",
-  AGE_IN_DAY = "age_in_day",
-  AGE_IN_MONTH = "age_in_month",
-  SEX = 'sex'
+   HEIGHT = "height",
+   LENGTH = "length",
+   LENHEI = "lenhei",
+   WEIGHT = "weight",
+   BMI = "bmi",
+   HEAD_CIRCUMFERENCE = "head_circumference",
+   MUAC = "muac",
+   TSF = "tsf",
+   SSF = "ssf",
+   WFLH = "wflh",
+   WFA = "wfa",
+   HFA = "hfa",
+   BMI_FOR_AGE = "bmi_for_age",
+   MUAC_FOR_AGE = "muac_for_age",
+   TSF_FOR_AGE = "tsf_for_age",
+   SSF_FOR_AGE = "ssf_for_age",
+   HC_FOR_AGE = "hc_for_age",
+   AGE_IN_DAY = "age_in_day",
+   AGE_IN_MONTH = "age_in_month",
+   SEX = "sex",
 }
 
-export const MAX_WEIGHT = 58.0
-export const MIN_WEIGHT = 0.9
-export const MIN_LENHEI = 38.0
-export const MAX_LENHEI = 150.0
+export const MAX_WEIGHT = 58.0;
+export const MIN_WEIGHT = 0.9;
+export const MIN_LENHEI = 38.0;
+export const MAX_LENHEI = 150.0;
 
-export const MAX_AGE_TO_USE_AGE_IN_DAY = DAY_IN_YEARS * 5
+export const MAX_AGE_TO_USE_AGE_IN_DAY = DAY_IN_YEARS * 5;
 export enum ZScoreComputingStrategyType {
-  AGEBASED = "age_based",
-  LENHEIBASED = 'lenhei_based'
+   AGEBASED = "age_based",
+   LENHEIBASED = "lenhei_based",
 }
-export const DAY_IN_TWO_YEARS= Math.round(DAY_IN_YEARS * 2)
+export const DAY_IN_TWO_YEARS = Math.round(DAY_IN_YEARS * 2);

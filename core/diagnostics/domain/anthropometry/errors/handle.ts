@@ -1,24 +1,26 @@
-import { Result } from '@shared';
-import { GROWTH_INDICATOR_ERRORS } from './messages';
+import { ErrorPath, getNestedError, Result } from "@shared";
+import { ANTHROPOMETRIC_MEASURE_ERROR, GROWTH_INDICATOR_ERRORS } from "./messages";
 
-type ErrorPath = string;
+export function handleGrowthIndicatorError(errorPath: ErrorPath, details?: string): Result<never> {
+   const error = getNestedError(GROWTH_INDICATOR_ERRORS, errorPath);
 
-function getNestedError(obj: any, path: string) {
-  return path.split('.')
-    .reduce((acc, key) => acc?.[key], obj);
+   if (!error) {
+      return Result.fail(`Unknown error code: ${errorPath}`);
+   }
+
+   const errorMessage = `[${error.code}] ${error.message}${details ? ` - ${details}` : ""}`;
+
+   return Result.fail(errorMessage);
 }
 
-export function handleGrowthIndicatorError(
-  errorPath: ErrorPath,
-  details?: string
-): Result<never> {
-  const error = getNestedError(GROWTH_INDICATOR_ERRORS, errorPath);
-  
-  if (!error) {
-    return Result.fail(`Unknown error code: ${errorPath}`);
-  }
+export function handleAnthropometricError(errorPath: ErrorPath, details?: string): Result<never> {
+   const error = getNestedError(ANTHROPOMETRIC_MEASURE_ERROR, errorPath);
 
-  const errorMessage = `[${error.code}] ${error.message}${details ? ` - ${details}` : ''}`;
-  
-  return Result.fail(errorMessage);
+   if (!error) {
+      return Result.fail(`Unknown error code: ${errorPath}`);
+   }
+
+   const errorMessage = `[${error.code}] ${error.message}${details ? ` - ${details}` : ""}`;
+
+   return Result.fail(errorMessage);
 }
