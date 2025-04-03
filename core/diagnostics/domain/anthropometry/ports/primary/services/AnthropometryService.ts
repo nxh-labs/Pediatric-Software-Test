@@ -1,7 +1,8 @@
-import { Result, Sex } from "@shared";
+import { Result } from "@shared";
 import { EvaluationContext, ValidateResult } from "../../../../common";
-import { AnthropometricData, AnthroSystemCodes, GrowthIndicatorValue } from "../../../models";
-export type AnthropometricVariableObject = Partial<Record<AnthroSystemCodes,Sex|number>>
+import { AnthropometricData, GrowthIndicatorValue } from "../../../models";
+import { AnthropometricVariableObject } from "../../../common";
+
 export interface IAnthropometricService {
    validateMeasurements(data: AnthropometricData, context: EvaluationContext): Promise<Result<ValidateResult>>;
    generateAnthropometricVariableObject(
