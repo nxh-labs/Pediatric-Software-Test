@@ -1,8 +1,10 @@
-import { evaluateCondition, handleError, Result } from "@shared";
+import { ConditionResult, evaluateCondition, handleError, Result } from "@shared";
 import { AnthropometricVariableObject } from "../common";
 import { Indicator, GrowthStandard, GrowthReferenceChart, AvailableChart } from "../models";
 import { IChartSelectionService } from "./interfaces/ChartSelectionService";
 import { GrowthReferenceChartRepository } from "../ports";
+import { handleGrowthIndicatorError } from "../errors/handle";
+import { GROWTH_INDICATOR_ERRORS } from "../errors";
 
 export class ChartSelectionService implements IChartSelectionService {
     constructor(private growthReferenceRepo: GrowthReferenceChartRepository) { }
@@ -29,7 +31,7 @@ export class ChartSelectionService implements IChartSelectionService {
             );
 
             if (!selectedChart) {
-                return Result.fail(GROWTH_INDICATOR_ERRORS.CHART_NOT_AVAILABLE);
+                return handleGrowthIndicatorError(GROWTH_INDICATOR_ERRORS.CHART.NOT_AVAILABLE.path, `Indicator: ${indicator.getCode()}, Chart: ${standard}`);
             }
             const growthReferenceChart = await this.growthReferenceRepo.getByCode(selectedChart.unpack().chartCode);
             return Result.ok(growthReferenceChart)

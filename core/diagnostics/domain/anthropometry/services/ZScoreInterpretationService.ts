@@ -2,10 +2,11 @@ import { ConditionResult, evaluateCondition, handleError, Result } from "@shared
 import { AnthropometricVariableObject } from "../common";
 import { Indicator, IndicatorInterpreter } from "../models";
 import { IZScoreInterpretationService } from "./interfaces/ZScoreInterpretationService";
+import { GROWTH_INDICATOR_ERRORS, handleGrowthIndicatorError } from "../errors";
 
 export class ZScoreInterpretationService implements IZScoreInterpretationService {
     constructor() { }
-    async findIntepretation(data: AnthropometricVariableObject, zScore: number, indicator: Indicator): Promise<Result<IndicatorInterpreter>> {
+    async findInterpretation(data: AnthropometricVariableObject, zScore: number, indicator: Indicator): Promise<Result<IndicatorInterpreter>> {
         try {
             const interpretations = indicator.getProps().interpretations;
             const interpretation = interpretations.find(interp => {
@@ -18,7 +19,7 @@ export class ZScoreInterpretationService implements IZScoreInterpretationService
             });
 
             if (!interpretation) {
-                return Result.fail(GROWTH_INDICATOR_ERRORS.INTERPRETATION_NOT_FOUND);
+                return handleGrowthIndicatorError(GROWTH_INDICATOR_ERRORS.INTERPRETATION.NOT_FOUND.path,`zScore : ${zScore} indicator: ${indicator.getCode()}`)
             }
 
             return Result.ok(interpretation);

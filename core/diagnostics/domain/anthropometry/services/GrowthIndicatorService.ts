@@ -1,9 +1,15 @@
-import { ConditionResult, evaluateCondition, evaluateFormula, formatError, handleError, Result, SystemCode } from "@shared";
+import { ConditionResult, evaluateCondition, formatError, handleError, Result, SystemCode } from "@shared";
 import { Indicator, AnthropometricMeasure, GrowthIndicatorValue, GrowthStandard, CreateGrowthIndicatorValueProps, StandardShape } from "../models";
 import { IGrowthIndicatorService } from "./interfaces/GrowthIndicatorService";
 import { AnthropometricMeasureRepository, GrowthReferenceChartRepository, IndicatorRepository } from "../ports";
 import { ZScoreComputingStrategy } from "../policies/interfaces/ZScoreComputingStrategy";
 import { AnthropometricVariableObject } from "../common";
+import { IChartSelectionService } from "./interfaces/ChartSelectionService";
+import { ChartSelectionService } from "./ChartSelectionService";
+import { ZScoreCalculationService } from "./ZScoreCalculationService";
+import { ZScoreInterpretationService } from "./ZScoreInterpretationService";
+import { IZScoreCalculationService } from "./interfaces/ZScoreCalculationService";
+import { IZScoreInterpretationService } from "./interfaces/ZScoreInterpretationService";
 
 /**
  * @class GrowthIndicatorService
@@ -12,6 +18,10 @@ import { AnthropometricVariableObject } from "../common";
  * using WHO growth standards and other reference systems.
  */
 export class GrowthIndicatorService implements IGrowthIndicatorService {
+   private readonly chartService: IChartSelectionService;
+   private readonly zScoreService: IZScoreCalculationService;
+   private readonly interpretationService: IZScoreInterpretationService;
+
    /**
     * @constructor
     * @param {AnthropometricMeasureRepository} anthropometricMeasureRepo - Repository for anthropometric measures
@@ -24,7 +34,11 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
       private indicatorRepo: IndicatorRepository,
       private growthChartRepo: GrowthReferenceChartRepository,
       private zScoreComputingStrategies: ZScoreComputingStrategy[]
-   ) { }
+   ) {
+      this.chartService = new ChartSelectionService(this.growthChartRepo)
+      this.zScoreService = new ZScoreCalculationService(this.zScoreComputingStrategies)
+      this.interpretationService = new ZScoreInterpretationService()
+   }
 
    /**
     * @method identifyPossibleIndicator
@@ -120,43 +134,35 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
 
    private async _calculateIndicator(data: AnthropometricVariableObject, indicator: Indicator, standard: GrowthStandard = GrowthStandard.OMS): Promise<Result<GrowthIndicatorValue>> {
       try {
-         const availableCharts = indicator.getAvailableCharts()
-         const findedChart = availableCharts.find(availableChart => {
-            const { condition } = availableChart
-            if (!condition.unpack().variables.every(variableName => Object.keys(data).includes(variableName))) {
-               return Result.fail("La variable pour verifier les conditions d'utilisation du GrowthChartReference n'est pas disponible")
-            }
-            const conditionResult = evaluateCondition(condition.unpack().value, { ...data, standard })
-            if (conditionResult === ConditionResult.True) return true
-            else return false
-         })
-         if (!findedChart) return Result.fail("Le growthChartReference Standard a utiliser pour ce indicateur n'est pas disponible");
-         const growthChartReference = await this.growthChartRepo.getByCode(findedChart.chartCode)
-         const findedStrategy = this.zScoreComputingStrategies.find(zscoreStrategy => zscoreStrategy.type === indicator.getZScoreComputingStrategyType() && zscoreStrategy.standard === standard);
-         if (!findedStrategy) return Result.fail("La strategie de calcule de z score pour l'indicateur et le standard de reference utilise n'est pas disponible")
-         const indicatorAxeX = evaluateFormula(indicator.getAxeX().value, data) as number
-         const indicatorAxeY = evaluateFormula(indicator.getAxeY().value, data) as number
-         const zscore = findedStrategy.computeZScore({
-            measurements: { x: indicatorAxeX, y: indicatorAxeY },
-            growthReferenceChart: growthChartReference
-         })
-         if (isNaN(zscore)) return Result.fail("Cette indicateur ne peut être calculer")
-         const indicatorAvailableIntrepretation = indicator.getInterpretations()
-         const findedInterpretation = indicatorAvailableIntrepretation.find(interpretation => {
-            const { condition } = interpretation
-            const conditionResult = evaluateCondition(condition.unpack().value, { ...data, z: zscore })
-            if (conditionResult === ConditionResult.True) return true
-            else return false
-         })
-         if (!findedInterpretation) return Result.fail("L'interpretation n'est pas trouvée pour ce z score")
+         // 1. Select appropriate chart
+         const chartResult = await this.chartService.selectChartForIndicator(data, indicator, standard);
+         if (chartResult.isFailure) return Result.fail(formatError(chartResult, GrowthIndicatorService.name));
+
+         // 2. Calculate z-score
+         const zScoreResult = await this.zScoreService.calculateZScore(
+            data,
+            indicator,
+            chartResult.val,
+            standard
+         );
+         if (zScoreResult.isFailure) return Result.fail(formatError(zScoreResult, GrowthIndicatorService.name));
+
+         // 3. Find interpretation
+         const interpretationResult = await this.interpretationService.findInterpretation(
+            data,
+            zScoreResult.val,
+            indicator
+         );
+         if (interpretationResult.isFailure) return Result.fail(formatError(interpretationResult, GrowthIndicatorService.name));
+         // 4. Create Growth Indicator value 
          const growthIndicatorValueProps: CreateGrowthIndicatorValueProps = {
             code: indicator.getCode(),
             unit: "zscore",
             growthStandard: standard,
             referenceSource: StandardShape.CURVE,
-            value: zscore,
-            interpretation: findedInterpretation.code.unpack(),
-            valueRange: findedInterpretation.range
+            value: zScoreResult.val,
+            interpretation: interpretationResult.val.unpack().code.unpack(),
+            valueRange: interpretationResult.val.unpack().range
          }
          return GrowthIndicatorValue.create(growthIndicatorValueProps)
       } catch (e: unknown) {
