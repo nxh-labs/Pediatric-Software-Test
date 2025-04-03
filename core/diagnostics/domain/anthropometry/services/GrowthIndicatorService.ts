@@ -1,51 +1,54 @@
+/**
+ * @fileoverview Service for managing and calculating anthropometric growth indicators
+ * using standardized growth references like WHO standards.
+ * @module GrowthIndicatorService
+ */
+ 
 import { ConditionResult, evaluateCondition, formatError, handleError, Result, SystemCode } from "@shared";
 import { Indicator, AnthropometricMeasure, GrowthIndicatorValue, GrowthStandard, CreateGrowthIndicatorValueProps, StandardShape } from "../models";
 import { IGrowthIndicatorService } from "./interfaces/GrowthIndicatorService";
-import { AnthropometricMeasureRepository, GrowthReferenceChartRepository, IndicatorRepository } from "../ports";
-import { ZScoreComputingStrategy } from "../policies/interfaces/ZScoreComputingStrategy";
+import { AnthropometricMeasureRepository, IndicatorRepository } from "../ports";
 import { AnthropometricVariableObject } from "../common";
 import { IChartSelectionService } from "./interfaces/ChartSelectionService";
-import { ChartSelectionService } from "./ChartSelectionService";
-import { ZScoreCalculationService } from "./ZScoreCalculationService";
-import { ZScoreInterpretationService } from "./ZScoreInterpretationService";
 import { IZScoreCalculationService } from "./interfaces/ZScoreCalculationService";
 import { IZScoreInterpretationService } from "./interfaces/ZScoreInterpretationService";
 
 /**
  * @class GrowthIndicatorService
  * @implements {IGrowthIndicatorService}
- * @description Service responsible for managing and calculating growth indicators for anthropometric measurements
- * using WHO growth standards and other reference systems.
+ * @description Handles the computation and management of growth indicators for anthropometric measurements.
+ * Provides functionality to:
+ * - Identify applicable growth indicators for given measurements
+ * - Calculate z-scores using different computing strategies
+ * - Interpret growth measurements against standard references
  */
 export class GrowthIndicatorService implements IGrowthIndicatorService {
-   private readonly chartService: IChartSelectionService;
-   private readonly zScoreService: IZScoreCalculationService;
-   private readonly interpretationService: IZScoreInterpretationService;
-
    /**
     * @constructor
-    * @param {AnthropometricMeasureRepository} anthropometricMeasureRepo - Repository for anthropometric measures
-    * @param {IndicatorRepository} indicatorRepo - Repository for growth indicators
-    * @param {GrowthReferenceChartRepository} growthChartRepo - Repository for growth reference charts
-    * @param {ZScoreComputingStrategy[]} zScoreComputingStrategies - Array of strategies for computing z-scores
+    * @param {AnthropometricMeasureRepository} anthropometricMeasureRepo - Access to anthropometric measure definitions
+    * @param {IndicatorRepository} indicatorRepo - Access to growth indicator definitions and formulas
+    * @param {GrowthReferenceChartRepository} growthChartRepo - Access to reference growth charts and standards
+    * @param {ZScoreComputingStrategy[]} zScoreComputingStrategies - Available strategies for z-score computation
     */
    constructor(
       private anthropometricMeasureRepo: AnthropometricMeasureRepository,
       private indicatorRepo: IndicatorRepository,
-      private growthChartRepo: GrowthReferenceChartRepository,
-      private zScoreComputingStrategies: ZScoreComputingStrategy[]
-   ) {
-      this.chartService = new ChartSelectionService(this.growthChartRepo)
-      this.zScoreService = new ZScoreCalculationService(this.zScoreComputingStrategies)
-      this.interpretationService = new ZScoreInterpretationService()
-   }
+      private chartService: IChartSelectionService,
+      private zScoreService: IZScoreCalculationService,
+      private interpretationService: IZScoreInterpretationService
+   ) { }
 
    /**
     * @method identifyPossibleIndicator
     * @async
-    * @param {AnthropometricVariableObject} data - Object containing anthropometric measurements
-    * @returns {Promise<Result<Indicator[]>>} - Returns a Result containing an array of possible indicators
-    * @description Identifies which growth indicators can be calculated based on available measurements
+    * @param {AnthropometricVariableObject} data - Object containing available anthropometric measurements
+    * @returns {Promise<Result<Indicator[]>>} Array of indicators that can be calculated
+    * @description 
+    * Analyzes available measurements to determine which growth indicators can be calculated.
+    * The process involves:
+    * 1. Getting all registered indicators
+    * 2. Checking if required measurements are available
+    * 3. Validating usage conditions for each indicator
     */
    async identifyPossibleIndicator(data: AnthropometricVariableObject): Promise<Result<Indicator[]>> {
       try {
@@ -77,9 +80,9 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
    /**
     * @method getRequireMeasureForIndicator
     * @async
-    * @param {SystemCode} indicatorCode - The code of the indicator
-    * @returns {Promise<Result<AnthropometricMeasure[]>>} - Returns required measurements for the indicator
-    * @description Retrieves all measurements required to calculate a specific indicator
+    * @param {SystemCode} indicatorCode - Unique identifier for the indicator
+    * @returns {Promise<Result<AnthropometricMeasure[]>>} List of required measurements
+    * @description Retrieves all anthropometric measurements needed to calculate a specific indicator
     */
    async getRequireMeasureForIndicator(indicatorCode: SystemCode): Promise<Result<AnthropometricMeasure[]>> {
       try {
@@ -95,11 +98,16 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
    /**
     * @method calculateIndicator
     * @async
-    * @param {AnthropometricVariableObject} data - Anthropometric measurements
-    * @param {SystemCode} indicatorCode - The indicator to calculate
-    * @param {GrowthStandard} standard - The growth standard to use (defaults to WHO)
-    * @returns {Promise<Result<GrowthIndicatorValue>>} - Returns the calculated indicator value
-    * @description Calculates a specific growth indicator for given measurements
+    * @param {AnthropometricVariableObject} data - Available anthropometric measurements
+    * @param {SystemCode} indicatorCode - Indicator to calculate
+    * @param {GrowthStandard} [standard=GrowthStandard.OMS] - Growth standard reference to use
+    * @returns {Promise<Result<GrowthIndicatorValue>>} Calculated indicator with interpretation
+    * @description 
+    * Calculates a specific growth indicator using provided measurements.
+    * Process includes:
+    * 1. Validating measurement availability
+    * 2. Computing z-score
+    * 3. Determining interpretation based on z-score
     */
    async calculateIndicator(data: AnthropometricVariableObject, indicatorCode: SystemCode, standard: GrowthStandard = GrowthStandard.OMS): Promise<Result<GrowthIndicatorValue>> {
       try {
@@ -116,10 +124,12 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
    /**
     * @method calculateAllIndicators
     * @async
-    * @param {AnthropometricVariableObject} data - Anthropometric measurements
-    * @param {GrowthStandard} standard - The growth standard to use (defaults to WHO)
-    * @returns {Promise<Result<GrowthIndicatorValue[]>>} - Returns all calculated indicator values
-    * @description Calculates all possible indicators for given measurements
+    * @param {AnthropometricVariableObject} data - Available anthropometric measurements
+    * @param {GrowthStandard} [standard=GrowthStandard.OMS] - Growth standard reference to use
+    * @returns {Promise<Result<GrowthIndicatorValue[]>>} Array of calculated indicators
+    * @description 
+    * Calculates all possible growth indicators for given measurements.
+    * Automatically determines which indicators can be calculated based on available data.
     */
    async calculateAllIndicators(data: AnthropometricVariableObject, standard: GrowthStandard = GrowthStandard.OMS): Promise<Result<GrowthIndicatorValue[]>> {
       try {
@@ -132,6 +142,22 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
       }
    }
 
+   /**
+    * @method _calculateIndicator
+    * @private
+    * @async
+    * @param {AnthropometricVariableObject} data - Anthropometric measurements
+    * @param {Indicator} indicator - Indicator definition to calculate
+    * @param {GrowthStandard} [standard=GrowthStandard.OMS] - Growth standard to use
+    * @returns {Promise<Result<GrowthIndicatorValue>>} Calculated indicator value with interpretation
+    * @description 
+    * Internal method that handles the actual calculation of an indicator.
+    * Steps include:
+    * 1. Finding appropriate growth chart
+    * 2. Selecting computation strategy
+    * 3. Computing indicator values
+    * 4. Determining result interpretation
+    */
    private async _calculateIndicator(data: AnthropometricVariableObject, indicator: Indicator, standard: GrowthStandard = GrowthStandard.OMS): Promise<Result<GrowthIndicatorValue>> {
       try {
          // 1. Select appropriate chart

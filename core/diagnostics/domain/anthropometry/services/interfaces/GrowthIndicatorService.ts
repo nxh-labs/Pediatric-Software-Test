@@ -1,7 +1,21 @@
+/**
+ * @fileoverview Interface defining services for managing and calculating anthropometric growth indicators
+ * using standardized growth references.
+ * @module IGrowthIndicatorService
+ */
+
 import { Result, SystemCode } from "@shared";
 import { AnthropometricMeasure, GrowthIndicatorValue, Indicator } from "../../models";
 import { AnthropometricVariableObject } from "../../common";
 
+/**
+ * @interface IGrowthIndicatorService
+ * @description Defines the contract for services that handle computation and management of growth indicators
+ * for anthropometric measurements. Provides capabilities for:
+ * - Identifying applicable growth indicators
+ * - Retrieving required measurements
+ * - Calculating individual and multiple indicators
+ */
 export interface IGrowthIndicatorService {
    identifyPossibleIndicator(data: AnthropometricVariableObject): Promise<Result<Indicator[]>>;
    getRequireMeasureForIndicator(indicatorCode: SystemCode): Promise<Result<AnthropometricMeasure[]>>;
