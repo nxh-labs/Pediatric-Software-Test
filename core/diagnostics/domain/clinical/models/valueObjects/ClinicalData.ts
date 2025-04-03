@@ -1,5 +1,6 @@
 import { ArgumentNotProvidedException, Guard, handleError, Result, ValueObject } from "@shared";
-import { ClinicalSign } from "../../../models/valueObjects/ClinicalSign";
+import { ClinicalSign } from "./ClinicalSign";
+
 
 export interface EdemaData {
    type: "Bilateral" | "Unilateral";

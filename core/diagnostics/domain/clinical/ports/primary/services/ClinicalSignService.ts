@@ -1,7 +1,11 @@
 import { Result } from "@shared";
-import { ClinicalData, ClinicalSignReference, MicronutrientDeficiency } from "../../../models";
-
+import { ClinicalData, NutrientImpact, RecommendedTest } from "../../../models";
+import { EvaluationContext, ValidateResult } from "../../../../common";
+export interface ClinicalNutritionalAnalysisResult {
+   suspectedNutrients: NutrientImpact[]
+   recommendedTests: RecommendedTest[]
+}
 export interface IClinicalSignService {
-   identifyPossibleSign(data: ClinicalData): Promise<Result<ClinicalSignReference[]>>;
-   getSuspectedNutrients(data: ClinicalData): Promise<Result<MicronutrientDeficiency[]>>;
+   validateClinicalData(data: ClinicalData): Promise<Result<ValidateResult>>;
+   analyseClinicalData(data: ClinicalData, context: EvaluationContext): Promise<Result<ClinicalNutritionalAnalysisResult[]>>;
 }
