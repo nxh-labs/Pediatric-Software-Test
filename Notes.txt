@@ -1,2 +1,1 @@
-Bon je suis au niveau du service clinique et ce que j'ai releve c'est que en dehors du contexte on ne devrait plus parler de signe clinique et celui ci est interne a notre module 
-donc on peut renvoyer en plus des nutrient et remmemdedtest, la liste des signes presentes ainsi on poura verifier si cette signes est bien presente pour le diagnostic finale de la malnutrition 
+Je suis au niveau de Biological Interpretation Service pour commencer l'interpretation range 
