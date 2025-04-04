@@ -1,1 +1,2 @@
-export * from "./ClinicalSignService";
+export * from "./ClinicalValidationService"
+export * from "./ClinicalAnalysisService"
