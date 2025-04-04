@@ -1,5 +1,6 @@
 import { Repository, SystemCode } from "@shared";
-import { ClinicalSignReference } from "../../models";
+import { ClinicalSignReference } from "../../../models";
+
 
 export interface ClinicalSignReferenceRepository extends Repository<ClinicalSignReference> {
    getByCode(code: SystemCode): Promise<ClinicalSignReference>;
