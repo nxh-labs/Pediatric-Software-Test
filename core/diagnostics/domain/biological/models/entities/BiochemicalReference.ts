@@ -11,7 +11,7 @@ import {
    SystemCode,
    UnitCode,
 } from "@shared";
-import { BiochemicalRange, IBiochemicalRange } from "./../valueObjects";
+import { BiochemicalRange, CreateBiochemicalRange, IBiochemicalRange } from "./../valueObjects";
 
 
 export interface IBiochemicalReference extends EntityPropsBaseType {
@@ -28,7 +28,7 @@ export interface CreateBiochemicalReference {
    code: string;
    unit: string;
    availableUnits: string[];
-   ranges: IBiochemicalRange[];
+   ranges: CreateBiochemicalRange[];
    source: string;
    notes: string[];
 }

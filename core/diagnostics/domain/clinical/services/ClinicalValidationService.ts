@@ -44,7 +44,7 @@ export class ClinicalValidationService implements IClinicalValidationService {
       try {
          const references = await this.getClinicalReferences(signs);
          return this.validateRequiredData(signs, references);
-      } catch (error) {
+      } catch (e:unknown) {
          return handleClinicalError(CLINICAL_ERRORS.REPOSITORY.REFERENCE_NOT_FOUND.path, "Failed to fetch clinical references") as Result<void>;
       }
    }
