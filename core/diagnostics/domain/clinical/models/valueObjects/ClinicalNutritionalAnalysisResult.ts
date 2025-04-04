@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Value object representing the results of clinical nutritional analysis.
+ * 
+ * Key components:
+ * - clinicalSign: The identified clinical sign
+ * - suspectedNutrients: List of nutrients that may be deficient/excess
+ * - recommendedTests: Suggested biochemical tests for confirmation
+ * 
+ * Used to capture the nutritional interpretation of observed clinical signs
+ * and guide further investigation through recommended tests.
+ */
+
 import { formatError, handleError, Result, SystemCode, ValueObject } from "@shared";
 import { NutrientImpact } from "./NutrientImpact";
 import { IRecommendedTest, RecommendedTest } from "./RecommendedTest";

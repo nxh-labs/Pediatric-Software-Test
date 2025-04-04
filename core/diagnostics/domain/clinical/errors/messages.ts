@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Defines error messages and codes for the clinical domain.
+ * 
+ * Error categories:
+ * - VALIDATION: Data validation errors
+ * - ANALYSIS: Clinical analysis process errors
+ * - REPOSITORY: Data access errors
+ * 
+ * Each error includes:
+ * - path: Error identifier path
+ * - code: Unique error code
+ * - message: Human readable error description
+ */
+
 export const CLINICAL_ERRORS = {
     VALIDATION: {
         MISSING_DATA: {

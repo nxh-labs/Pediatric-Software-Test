@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Entity representing the relationship between clinical signs
+ * and potential nutritional deficiencies.
+ * 
+ * @class NutritionalRiskFactor
+ * @extends Entity<INutritionalRiskFactor>
+ * 
+ * Key features:
+ * - Maps clinical signs to potential nutrient deficiencies
+ * - Defines conditions that modify risk assessment
+ * - Specifies recommended biochemical tests
+ * - Supports dynamic risk factor evaluation
+ */
+
 import { AggregateID, Entity, EntityPropsBaseType, formatError, handleError, Result, SystemCode } from "@shared";
 import { Condition, ICondition } from "../../../common";
 import { INutrientImpact, IRecommendedTest, NutrientImpact, RecommendedTest } from "../valueObjects";

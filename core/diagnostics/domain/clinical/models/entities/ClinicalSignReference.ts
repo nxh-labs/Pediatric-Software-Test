@@ -1,3 +1,18 @@
+/**
+ * @fileoverview ClinicalSignReference entity represents a reference definition for clinical signs 
+ * used in nutritional assessment.
+ * 
+ * @class ClinicalSignReference
+ * @extends Entity<IClinicalSignReference>
+ * 
+ * Properties:
+ * - name: Human readable name of the clinical sign
+ * - code: Unique identifier code for the sign
+ * - description: Detailed description of the sign
+ * - evaluationRule: Logic for evaluating presence of the sign
+ * - data: Associated measurement data points
+ */
+
 import {
    AggregateID,
    EmptyStringError,

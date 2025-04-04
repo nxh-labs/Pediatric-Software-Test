@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Service responsible for validating clinical data against defined standards.
+ * 
+ * @class ClinicalValidationService
+ * @implements IClinicalValidationService
+ * 
+ * Key responsibilities:
+ * - Validates completeness of clinical observations
+ * - Ensures all required data points are present
+ * - Verifies data format and ranges
+ * - Cross-references with clinical sign definitions
+ */
+
 import { formatError, handleError, Result } from "@shared";
 import { ValidateResult } from "../../common";
 import { ClinicalData, ClinicalSign, ClinicalSignReference } from "../models";

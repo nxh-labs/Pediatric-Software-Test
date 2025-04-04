@@ -1,6 +1,18 @@
+/**
+ * @fileoverview Value object representing clinical observation data for a patient.
+ * 
+ * Key components:
+ * @interface EdemaData - Structure for edema-specific observations
+ * - type: Classification of edema (Bilateral/Unilateral)
+ * - godetStep: Severity measure (0-3)
+ * 
+ * @interface IClinicalData - Complete clinical data structure
+ * - edema: Required edema assessment
+ * - otherSigns: Additional clinical observations
+ */
+
 import { ArgumentNotProvidedException, Guard, handleError, Result, ValueObject } from "@shared";
 import { ClinicalSign } from "./ClinicalSign";
-
 
 export interface EdemaData {
    type: "Bilateral" | "Unilateral";

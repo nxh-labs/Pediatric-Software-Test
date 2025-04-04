@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Service responsible for analyzing clinical signs and determining their
+ * nutritional implications.
+ * 
+ * @class ClinicalAnalysisService
+ * @implements IClinicalAnalysisService
+ * 
+ * Key functionalities:
+ * - Analyzes clinical data to identify present signs
+ * - Maps clinical signs to potential nutrient deficiencies
+ * - Recommends relevant biochemical tests
+ * - Evaluates signs against patient context
+ */
+
 import { ArgumentInvalidException, ConditionResult, evaluateCondition, Result } from "@shared";
 import { EvaluationContext } from "../../common";
 import { ClinicalData, ClinicalNutritionalAnalysisResult, ClinicalSign, ClinicalSignReference } from "../models";
