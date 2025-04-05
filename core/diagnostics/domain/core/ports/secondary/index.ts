@@ -1,2 +1,2 @@
-export * from "./alc";
+export * from "./acl";
 export * from "./repositories";

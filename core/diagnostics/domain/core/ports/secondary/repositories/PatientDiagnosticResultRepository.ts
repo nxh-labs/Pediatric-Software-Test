@@ -1,4 +1,4 @@
 import { Repository } from "@shared";
-import { PatientDiagnosticResult } from "../../../models";
+import { NutritionalAssessmentResult } from "../../../models";
 
-export type PatientDiagnosticResultRepository = Repository<PatientDiagnosticResult>;
+export type NutritionalAssessmentResultRepository = Repository<NutritionalAssessmentResult>;

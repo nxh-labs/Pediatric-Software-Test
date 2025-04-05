@@ -1,2 +1,3 @@
-export * from "./AnthropometryService"
-export * from "./GrowthIndicatorService"
+export * from "./AnthropometryValidationService";
+export * from "./GrowthIndicatorService";
+export * from "./AnthropometricVariableGeneratorService";
