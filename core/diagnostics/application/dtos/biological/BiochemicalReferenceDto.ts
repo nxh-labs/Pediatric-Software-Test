@@ -1,7 +1,8 @@
+import { AggregateID } from "@shared";
 import { BiochemicalRangeDto } from "./BiochemicalRangeDto";
 
 export interface BiochemicalReferenceDto {
-   id: string;
+   id: AggregateID;
    name: string;
    code: string;
    unit: string;

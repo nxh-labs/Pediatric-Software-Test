@@ -10,5 +10,5 @@ export interface ClinicalSignReferenceDto {
    evaluationRule: ICondition;
    data: ClinicalSignDataDto[];
    createdAt: string;
-   updatedAT: string;
+   updatedAt: string;
 }

@@ -6,7 +6,6 @@ import { BiologicalTestResultDto } from "../biological";
 
 export interface PatientDiagnosticDataDto {
    id: AggregateID;
-   patientId: AggregateID;
    anthropometricData: AnthropometricDataDto;
    clinicalData: {
       edema: ClinicalSignDto<EdemaData>;

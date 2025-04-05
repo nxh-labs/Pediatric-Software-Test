@@ -13,7 +13,6 @@ import {
 } from "@shared";
 import { BiochemicalRange, CreateBiochemicalRange, IBiochemicalRange } from "./../valueObjects";
 
-
 export interface IBiochemicalReference extends EntityPropsBaseType {
    name: string;
    code: SystemCode;
@@ -40,9 +39,6 @@ export class BiochemicalReference extends Entity<IBiochemicalReference> {
    getCode(): string {
       return this.props.unit.unpack();
    }
-   getAvailableCode(): string[] {
-      return this.props.availableUnits.map((unit) => unit.unpack());
-   }
    getRanges(): IBiochemicalRange[] {
       return this.props.ranges.map((range) => range.unpack());
    }
@@ -51,6 +47,9 @@ export class BiochemicalReference extends Entity<IBiochemicalReference> {
    }
    getNotes(): string[] {
       return this.props.notes;
+   }
+   getUnits(): { defaultUnit: string; availableUnits: string[] } {
+      return { defaultUnit: this.props.unit.unpack(), availableUnits: this.props.availableUnits.map((unit) => unit.unpack()) };
    }
    changeName(name: string) {
       this.props.name = name;

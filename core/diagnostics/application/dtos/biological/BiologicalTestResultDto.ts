@@ -1,5 +1,5 @@
 export interface BiologicalTestResultDto {
    code: string;
-   value: string;
+   value: number;
    unit: string;
 }

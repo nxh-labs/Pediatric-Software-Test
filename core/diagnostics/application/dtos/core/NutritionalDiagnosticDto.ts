@@ -5,7 +5,7 @@ import { DiagnosticModificationDto } from "./DiagnosticModificationDto";
 
 export interface NutritionalDiagnosticDto {
    id: AggregateID;
-   patientI: AggregateID;
+   patientId: AggregateID;
    patientData: PatientDiagnosticDataDto;
    result?: NutritionalAssessmentResultDto;
    date: string;
