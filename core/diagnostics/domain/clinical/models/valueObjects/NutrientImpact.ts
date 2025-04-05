@@ -6,6 +6,7 @@ export interface INutrientImpact {
 }
 
 export class NutrientImpact extends ValueObject<INutrientImpact> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validate(props: Readonly<INutrientImpact>): void {
         // validation code here 
     }

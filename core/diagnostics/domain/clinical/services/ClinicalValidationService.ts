@@ -14,7 +14,7 @@
 
 import { formatError, handleError, Result } from "@shared";
 import { ValidateResult } from "../../common";
-import { ClinicalData, ClinicalSign, ClinicalSignReference } from "../models";
+import { ClinicalData, ClinicalDataType, ClinicalSign, ClinicalSignReference, IClinicalSignReference } from "../models";
 import { ClinicalSignReferenceRepository, IClinicalValidationService } from "../ports";
 import { CLINICAL_ERRORS, handleClinicalError } from "../errors";
 
@@ -58,26 +58,84 @@ export class ClinicalValidationService implements IClinicalValidationService {
    }
 
    private validateRequiredData(signs: ClinicalSign<any>[], references: ClinicalSignReference[]): Result<void> {
-      for (const clinicalRef of references) {
-         const clinicalSignData = signs.find((sign) => sign.unpack().code.equals(clinicalRef.getProps().code));
+      try {
+         for (const clinicalRef of references) {
+            const clinicalSignData = signs.find((sign) => sign.unpack().code.equals(clinicalRef.getProps().code));
 
-         if (!clinicalSignData) {
-            return handleClinicalError(
-               CLINICAL_ERRORS.VALIDATION.MISSING_DATA.path,
-               `Missing clinical sign data for ${clinicalRef.getCode()}`,
-            ) as Result<void>;
+            if (!clinicalSignData) {
+               return handleClinicalError(
+                  CLINICAL_ERRORS.VALIDATION.MISSING_DATA.path,
+                  `Missing clinical sign data for ${clinicalRef.getCode()}`,
+               ) as Result<void>;
+            }
+
+            const clinicalRefNeedData = clinicalRef.getClinicalSignData();
+            const clinicalDataProvided = Object.keys(clinicalSignData.unpack().data);
+
+            if (!clinicalRefNeedData.every((clinicalNeeded) => clinicalDataProvided.includes(clinicalNeeded.code.unpack()))) {
+               return handleClinicalError(
+                  CLINICAL_ERRORS.VALIDATION.MISSING_DATA.path,
+                  `Incomplete clinical data for ${clinicalRef.getCode()}`,
+               ) as Result<void>;
+            }
+            const typeValidationResult = this.validateRequiredDataType(clinicalSignData, clinicalRef.getProps());
+            if (typeValidationResult.isFailure) return Result.fail(formatError(typeValidationResult, ClinicalValidationService.name));
          }
-
-         const clinicalRefNeedDataCode = clinicalRef.getClinicalSignData().map((data) => data.code.unpack());
-         const clinicalDataProvided = Object.keys(clinicalSignData.unpack().data);
-
-         if (!clinicalRefNeedDataCode.every((code) => clinicalDataProvided.includes(code))) {
-            return handleClinicalError(
-               CLINICAL_ERRORS.VALIDATION.MISSING_DATA.path,
-               `Incomplete clinical data for ${clinicalRef.getCode()}`,
-            ) as Result<void>;
-         }
+         return Result.ok();
+      } catch (e: unknown) {
+         return handleError(e);
       }
-      return Result.ok();
+   }
+   /**
+    *
+    * @param sign
+    * @param ref
+    * @returns
+    * @pre La validation des codes dois etre fait avant l'appelle de cette function pour assurer un fonctionnement sans probleme
+    */
+   private validateRequiredDataType(sign: ClinicalSign<any>, ref: IClinicalSignReference): Result<boolean> {
+      try {
+         const signData = sign.unpack().data;
+         const clinicalSignRefData = ref.data;
+         for (const clinicalSignRefDataEntry of clinicalSignRefData) {
+            const dataCode = clinicalSignRefDataEntry.unpack().code.unpack();
+            const dataType = clinicalSignRefDataEntry.unpack().dataType;
+            const dataTypeRange = clinicalSignRefDataEntry.unpack().dataRange;
+            const signDataValue = signData[dataCode]!;
+            let validationResult: boolean = false;
+
+            switch (dataType) {
+               case ClinicalDataType.BOOL:
+                  validationResult = typeof signDataValue === "boolean";
+                  break;
+               case ClinicalDataType.INT:
+                  validationResult = typeof signDataValue === "number";
+                  break;
+               case ClinicalDataType.STR:
+                  validationResult = typeof signDataValue === "string";
+                  break;
+               case ClinicalDataType.RANGE:
+                  {
+                     const isNumber = typeof signDataValue === "number";
+                     const inRange =
+                        (dataTypeRange as [number, number])[0] >= signDataValue && signDataValue <= (dataTypeRange as [number, number])[1];
+                     validationResult = isNumber && inRange;
+                  }
+                  break;
+               default: {
+                  throw new Error("This data type is not supported.");
+               }
+            }
+            if (!validationResult) {
+               return handleClinicalError(
+                  CLINICAL_ERRORS.VALIDATION.INVALID_DATA_TYPE.path,
+                  `Type : ${dataType} , Value: ${signDataValue} ${dataTypeRange ?? "Range : " + dataTypeRange}`,
+               ) as Result<boolean>;
+            }
+         }
+         return Result.ok(true);
+      } catch (e: unknown) {
+         return handleError(e);
+      }
    }
 }

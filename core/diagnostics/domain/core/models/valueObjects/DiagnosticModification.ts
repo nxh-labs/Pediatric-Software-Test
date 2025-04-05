@@ -5,7 +5,7 @@ export interface IDiagnosticModification {
    prevResult: NutritionalAssessmentResult;
    nextResult: NutritionalAssessmentResult;
    date: DomainDate;
-   justification: string;
+   reason: string;
 }
 
 export class DiagnosticModification extends ValueObject<IDiagnosticModification> {
@@ -15,8 +15,8 @@ export class DiagnosticModification extends ValueObject<IDiagnosticModification>
             "The prev Diagnostic Result can't be the same with the next DiagnosticResult when you want to make a modification.",
          );
       }
-      if (Guard.isEmpty(props.justification).succeeded)
-         throw new EmptyStringError("The justification (raison) why you modify a diagnostic must be provide.");
+      if (Guard.isEmpty(props.reason).succeeded)
+         throw new EmptyStringError("The reason why you modify a diagnostic must be provide.");
    }
    static create(props: IDiagnosticModification): Result<DiagnosticModification> {
       try {

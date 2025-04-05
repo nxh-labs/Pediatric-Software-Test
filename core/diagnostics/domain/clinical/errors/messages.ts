@@ -23,6 +23,11 @@ export const CLINICAL_ERRORS = {
             path: "VALIDATION.INVALID_DATA",
             code: "CL002",
             message: "Les données cliniques fournies sont invalides"
+        },
+        INVALID_DATA_TYPE: {
+            path: 'VALIDATION.INVALID_DATA_TYPE',
+            code: 'CL007',
+            message: "Le type de donnée entrée ne corresponds pas au type voulue pas les clinical Ref."
         }
     },
     ANALYSIS: {
