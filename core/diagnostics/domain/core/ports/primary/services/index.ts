@@ -1,3 +1,2 @@
-export * from "./DiagnosticService";
-export * from "./GlobalDiagnosticService";
 export * from "./PatientDataValidationService";
+export * from "./NutritionalAssessmentService";

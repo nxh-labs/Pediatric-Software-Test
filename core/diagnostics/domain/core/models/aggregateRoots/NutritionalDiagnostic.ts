@@ -9,7 +9,7 @@ import {
    Guard,
    InvalidResultError,
 } from "@shared";
-import { PatientDiagnosticResult, PatientDiagnosticData } from "../entities";
+import { NutritionalAssessmentResult, PatientDiagnosticData } from "../entities";
 import { AnthropometricData } from "../../../anthropometry";
 import { BiologicalTestResult } from "../../../biological";
 import { ClinicalData } from "../../../clinical";
@@ -19,7 +19,7 @@ import { DiagnosticModification } from "../valueObjects";
 export interface INutritionalDiagnostic extends EntityPropsBaseType {
    patientId: AggregateID;
    patientData: PatientDiagnosticData;
-   result?: PatientDiagnosticResult;
+   result?: NutritionalAssessmentResult;
    date: DomainDate;
    notes: string[];
    atInit: boolean;
@@ -33,7 +33,7 @@ export class NutritionalDiagnostic extends AggregateRoot<INutritionalDiagnostic>
    getPatientData(): PatientDiagnosticData {
       return this.props.patientData;
    }
-   getDiagnosticResult(): PatientDiagnosticResult | undefined {
+   getDiagnosticResult(): NutritionalAssessmentResult | undefined {
       return this.props.result;
    }
    getNotes(): string[] {
@@ -61,7 +61,7 @@ export class NutritionalDiagnostic extends AggregateRoot<INutritionalDiagnostic>
       this.validate();
       this.init();
    }
-   saveDiagnostic(patientDiagnosticResult: PatientDiagnosticResult): void {
+   saveDiagnostic(patientDiagnosticResult: NutritionalAssessmentResult): void {
       if (this.props.atInit) {
          this.props.result = patientDiagnosticResult;
       }

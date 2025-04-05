@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @fileoverview Service responsible for validating clinical data against defined standards.
- * 
+ *
  * @class ClinicalValidationService
  * @implements IClinicalValidationService
- * 
+ *
  * Key responsibilities:
  * - Validates completeness of clinical observations
  * - Ensures all required data points are present
@@ -44,8 +45,11 @@ export class ClinicalValidationService implements IClinicalValidationService {
       try {
          const references = await this.getClinicalReferences(signs);
          return this.validateRequiredData(signs, references);
-      } catch (e:unknown) {
-         return handleClinicalError(CLINICAL_ERRORS.REPOSITORY.REFERENCE_NOT_FOUND.path, "Failed to fetch clinical references") as Result<void>;
+      } catch (e: unknown) {
+         return handleClinicalError(
+            CLINICAL_ERRORS.REPOSITORY.REFERENCE_NOT_FOUND.path,
+            `Failed to fetch clinical references : [Error]:${e}`,
+         ) as Result<void>;
       }
    }
 

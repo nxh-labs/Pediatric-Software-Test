@@ -1,9 +1,9 @@
-import { ArgumentInvalidException, DomainDate, EmptyStringError, Guard, ValueObject } from "@shared";
-import { PatientDiagnosticResult } from "../entities";
+import { ArgumentInvalidException, DomainDate, EmptyStringError, Guard, handleError, Result, ValueObject } from "@shared";
+import { NutritionalAssessmentResult } from "../entities";
 
 export interface IDiagnosticModification {
-   prevResult: PatientDiagnosticResult;
-   nextResult: PatientDiagnosticResult;
+   prevResult: NutritionalAssessmentResult;
+   nextResult: NutritionalAssessmentResult;
    date: DomainDate;
    justification: string;
 }
@@ -17,5 +17,12 @@ export class DiagnosticModification extends ValueObject<IDiagnosticModification>
       }
       if (Guard.isEmpty(props.justification).succeeded)
          throw new EmptyStringError("The justification (raison) why you modify a diagnostic must be provide.");
+   }
+   static create(props: IDiagnosticModification): Result<DiagnosticModification> {
+      try {
+         return Result.ok(new DiagnosticModification(props));
+      } catch (e: unknown) {
+         return handleError(e);
+      }
    }
 }

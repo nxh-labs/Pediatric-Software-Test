@@ -1,1 +1,2 @@
-export * from "./BiologicalService";
+export * from "./BiologicalInterpretationService";
+export * from "./BiologicalValidationService";

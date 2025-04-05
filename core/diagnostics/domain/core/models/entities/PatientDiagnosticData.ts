@@ -12,7 +12,7 @@ import {
 } from "@shared";
 import { AnthropometricData, DAY_IN_MONTHS, DAY_IN_YEARS, MAX_AGE_IN_PEDIATRIC, CreateAnthropometricData } from "../../../anthropometry";
 import { BiologicalTestResult, CreateBiologicalTestResult } from "../../../biological";
-import { ClinicalData, IClinicalData } from "../../../clinical";
+import { ClinicalData, CreateClinicalData } from "../../../clinical";
 
 
 
@@ -27,7 +27,7 @@ export type CreatePatientDiagnosticData = {
    sex: "M" | "F" | "O";
    birthday: string;
    anthropometricData: CreateAnthropometricData;
-   clinicalSigns: IClinicalData;
+   clinicalSigns: CreateClinicalData
    biologicalTestResults: CreateBiologicalTestResult[];
 };
 

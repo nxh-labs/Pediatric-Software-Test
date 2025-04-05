@@ -3,12 +3,12 @@ import { BiochemicalRangeStatus } from "../constants";
 
 export interface IBiologicalAnalysisInterpretation {
    code: SystemCode;
-   interpretation: string;
+   interpretation: string[];
    status: BiochemicalRangeStatus;
 }
 export interface CreateBiologicalAnalysisInterpretationProps {
    code: string;
-   interpretation: string;
+   interpretation: string[];
    status?: BiochemicalRangeStatus; // Optional, defaults to 'Normal' if not provided
 }
 export class BiologicalAnalysisInterpretation extends ValueObject<IBiologicalAnalysisInterpretation> {
@@ -24,7 +24,7 @@ export class BiologicalAnalysisInterpretation extends ValueObject<IBiologicalAna
          return Result.ok(
             new BiologicalAnalysisInterpretation({
                code: codeRes.val,
-               interpretation: props.interpretation.trim(), // Ensure no leading/trailing whitespace
+               interpretation: props.interpretation, // Ensure no leading/trailing whitespace
                // If status is not provided, default to 'Normal'
                status: props.status ?? BiochemicalRangeStatus.NORMAL, // Default to 'Normal' if not provided
             }),

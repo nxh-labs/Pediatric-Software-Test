@@ -25,6 +25,7 @@ export interface CreateClinicalNutritionalAnalysisResultProps {
    recommendedTests: IRecommendedTest[];
 }
 export class ClinicalNutritionalAnalysisResult extends ValueObject<IClinicalNutritionalAnalysisResult> {
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    protected validate(props: Readonly<IClinicalNutritionalAnalysisResult>): void {
       // Validation code
    }

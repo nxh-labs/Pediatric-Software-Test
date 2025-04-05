@@ -1,3 +1,3 @@
 export * from "./PatientDiagnosticData";
-export * from "./PatientDiagnosticResult";
+export * from "./NutritionalAssessmentResult";
 export * from "./DiagnosticRule";
