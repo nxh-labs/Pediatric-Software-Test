@@ -1,4 +1,4 @@
-import { AggregateID, Sex } from "@shared";
+import { AggregateID } from "@shared";
 import { GrowthStandard } from "../../../domain";
 import { ChartDataDto } from "./ChartDataDto";
 
@@ -7,7 +7,7 @@ export interface GrowthReferenceChartDto {
    code: string;
    name: string;
    standard: GrowthStandard;
-   sex: Sex;
+   sex: "M" | "F";
    data: ChartDataDto[];
    createdAt: string;
    updatedAt: string;
