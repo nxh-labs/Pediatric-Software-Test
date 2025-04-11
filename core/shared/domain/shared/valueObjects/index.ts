@@ -6,3 +6,6 @@ export * from "./Gender";
 export * from "./FullName";
 export * from "./SystemCode";
 export * from "./UnitCode";
+export * from "./Address";
+export * from "./PhoneNumber";
+export * from "./Contact";

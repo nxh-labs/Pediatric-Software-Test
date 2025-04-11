@@ -10,17 +10,17 @@ import {
    UpdateIndicatorRequest,
    UpdateIndicatorResponse,
 } from "../useCases";
-import { IGrowthIndicatorService } from "./interfaces";
+import { IIndicatorService } from "./interfaces";
 import { IndicatorDto } from "../dtos";
 
-export interface GrowthIndicatorServiceUseCases {
+export interface IndicatorServiceUseCases {
    createUC: UseCase<CreateIndicatorRequest, CreateIndicatorResponse>;
    getUC: UseCase<GetIndicatorRequest, GetIndicatorResponse>;
    updateUC: UseCase<UpdateIndicatorRequest, UpdateIndicatorResponse>;
    deleteUC: UseCase<DeleteIndicatorRequest, DeleteIndicatorResponse>;
 }
-export class GrowthIndicatorService implements IGrowthIndicatorService {
-   constructor(private readonly ucs: GrowthIndicatorServiceUseCases) {}
+export class IndicatorService implements IIndicatorService {
+   constructor(private readonly ucs: IndicatorServiceUseCases) {}
    async create(req: CreateIndicatorRequest): Promise<AppServiceResponse<{ id: AggregateID }> | Message> {
       const res = await this.ucs.createUC.execute(req);
       if (res.isRight()) return { data: res.value.val };
