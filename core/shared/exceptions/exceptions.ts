@@ -11,6 +11,7 @@ import {
    INVALID_DDD_OBJECT,
    ILLEGAL_DOMAIN_STATUS,
    ILLEGAL_DOMAIN_ACTION,
+   EVENT_HANDLER_FAILED,
 } from "./exception.code";
 import { ExceptionBase } from "./exception.base";
 
@@ -162,6 +163,13 @@ export class IllegalActionException extends ExceptionBase {
    readonly code: string = ILLEGAL_DOMAIN_ACTION;
    static readonly message = "The current action is not legal.";
    constructor(msg = IllegalActionException.message) {
+      super(msg);
+   }
+}
+export class EventHandlerExecutionFailed extends ExceptionBase {
+   readonly code: string = EVENT_HANDLER_FAILED;
+   static readonly message = "The current event handler execution failed";
+   constructor(msg = EventHandlerExecutionFailed.message) {
       super(msg);
    }
 }
