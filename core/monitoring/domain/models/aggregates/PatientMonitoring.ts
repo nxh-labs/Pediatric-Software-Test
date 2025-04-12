@@ -29,6 +29,10 @@ export class PatientMonitoring extends AggregateRoot<IPatientMonitoring> {
          this.addDomainEvent(new VisitRemovedEvent({ patientId: this.getPatientId(), visitId }));
       }
    }
+   override delete(): void {
+      this.props.visits.forEach((visit) => visit.delete());
+      super.delete();
+   }
    public validate(): void {
       this._isValid = false;
       // Validation Code here
