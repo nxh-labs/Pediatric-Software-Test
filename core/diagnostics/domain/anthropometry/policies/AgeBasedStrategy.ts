@@ -25,7 +25,7 @@ export class AgeBasedStrategy implements ZScoreComputingStrategy {
          if (!standard) return NaN;
          return Math.round(this.anthroComputingHelper.computeZScoreAdjusted(y, standard.l, standard.median, standard.s));
       }
-      if (age_in_day >= MAX_AGE_IN_PEDIATRIC * DAY_IN_YEARS) {
+      if (age_in_day <= MAX_AGE_IN_PEDIATRIC * DAY_IN_YEARS) {
          const age_in_month = age_in_day / DAY_IN_MONTHS;
          const standard = this.findGrowthStandardWhenAgeIsInMonth(age_in_month, growthReferenceChart);
          if (!standard) return NaN;

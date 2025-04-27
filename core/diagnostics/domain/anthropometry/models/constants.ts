@@ -105,6 +105,7 @@ export enum AnthroSystemCodes {
    TSF = "tsf",
    SSF = "ssf",
    WFLH = "wflh",
+   WFLH_UNISEXE = "wflh_unisexe",
    WFA = "wfa",
    HFA = "hfa",
    BMI_FOR_AGE = "bmi_for_age",

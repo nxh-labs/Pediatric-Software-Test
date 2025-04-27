@@ -18,7 +18,7 @@ import {
    IndicatorInterpreter,
 } from "../valueObjects";
 import { Condition, Formula, ICondition, IFormula } from "../../../common";
-import { GrowthIndicatorRange, ZScoreComputingStrategyType } from "../constants";
+import { GrowthIndicatorRange, StandardShape, ZScoreComputingStrategyType } from "../constants";
 
 /**
  * `Indicator`
@@ -41,6 +41,7 @@ export interface IIndicator extends EntityPropsBaseType {
    usageConditions: Condition; // Ici puisque l'utilisation de l'indicateur peut aussi dependre du tranche d'age
    interpretations: IndicatorInterpreter[];
    zScoreComputingStrategy: ZScoreComputingStrategyType;
+   standardShape: StandardShape;
 }
 export interface CreateIndicatorProps {
    code: string;
@@ -52,6 +53,7 @@ export interface CreateIndicatorProps {
    usageConditions: ICondition;
    interpretations: CreateIndicatorInterpreter[];
    zScoreComputingStrategy: ZScoreComputingStrategyType;
+   standardShape: StandardShape;
 }
 export class Indicator extends Entity<IIndicator> {
    getName(): string {
@@ -161,6 +163,7 @@ export class Indicator extends Entity<IIndicator> {
                   usageConditions: conditionRes.val,
                   interpretations: interpretationsRes.map((res) => res.val),
                   zScoreComputingStrategy: createIndicatorProps.zScoreComputingStrategy,
+                  standardShape: createIndicatorProps.standardShape,
                },
             }),
          );

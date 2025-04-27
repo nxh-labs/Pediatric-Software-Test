@@ -63,7 +63,7 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
                   const usageCondition = indicator.getUsageCondition();
                   const variableNames = usageCondition.variables;
                   if (!variableNames.every((variableName) => anthropDataMeasureCodes.includes(variableName))) {
-                     return Result.fail("The context don't containt all needed variables");
+                     return Result.fail("The context don't contain all needed variables");
                   }
                   const conditionResult = evaluateCondition<AnthropometricVariableObject>(usageCondition.value, data);
                   if (ConditionResult.True === conditionResult) possibleIndicators.push(indicator);
@@ -172,6 +172,7 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
       standard: GrowthStandard = GrowthStandard.OMS,
    ): Promise<Result<GrowthIndicatorValue>> {
       try {
+         //TODO: Ici je pourrai verifier si l'indicateur veux utiliser un chat ou un table donc notre logique de table pourra s'y intégrer facilement
          // 1. Select appropriate chart
          const chartResult = await this.chartService.selectChartForIndicator(data, indicator, standard);
          if (chartResult.isFailure) return Result.fail(formatError(chartResult, GrowthIndicatorService.name));
