@@ -13,6 +13,7 @@ export class IndicatorMapper implements ApplicationMapper<Indicator, IndicatorDt
          neededMeasureCodes: entity.getMeasureCodes(),
          usageConditions: entity.getUsageCondition(),
          zScoreComputingStrategy: entity.getZScoreComputingStrategyType(),
+         standardShape: entity.getStandardShape(),
          interpretations: entity.getInterpretations().map((interpretation) => ({
             code: interpretation.code.unpack(),
             condition: interpretation.condition.unpack(),
@@ -22,6 +23,9 @@ export class IndicatorMapper implements ApplicationMapper<Indicator, IndicatorDt
          availableRefCharts: entity
             .getAvailableCharts()
             .map((availableChart) => ({ chartCode: availableChart.chartCode.unpack(), condition: availableChart.condition.unpack() })),
+         availableRefTables: entity
+            .getAvailableTables()
+            .map((availableTable) => ({ tableCode: availableTable.tableCode.unpack(), condition: availableTable.condition.unpack() })),
          createdAt: entity.createdAt,
          updatedAt: entity.updatedAt,
       };

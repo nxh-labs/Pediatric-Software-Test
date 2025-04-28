@@ -8,7 +8,7 @@ export class GrowthReferenceChartMapper implements ApplicationMapper<GrowthRefer
          id: entity.id,
          code: entity.getCode(),
          name: entity.getName(),
-         sex: entity.getSex(),
+         sex: entity.getSex() as "M" | "F",
          standard: entity.getStandard(),
          data: entity.getChartData(),
          createdAt: entity.createdAt,

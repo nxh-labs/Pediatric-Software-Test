@@ -2,6 +2,7 @@ export * from "./AnthropometricMeasureMapper";
 export * from "./BiochemicalReferenceMapper";
 export * from "./ClinicalSignReferenceMapper";
 export * from "./GrowthReferenceChartMapper";
+export * from "./GrowthReferenceTableMapper";
 export * from "./IndicatorMapper";
 export * from "./NutritionalAssessmentResultMapper";
 export * from "./NutritionalDiagnosticMapper";
