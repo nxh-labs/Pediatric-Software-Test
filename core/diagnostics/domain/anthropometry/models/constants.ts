@@ -127,5 +127,6 @@ export const MAX_AGE_TO_USE_AGE_IN_DAY = DAY_IN_YEARS * 5;
 export enum ZScoreComputingStrategyType {
    AGEBASED = "age_based",
    LENHEIBASED = "lenhei_based",
+   TABLEBASED = "table_based",
 }
 export const DAY_IN_TWO_YEARS = Math.round(DAY_IN_YEARS * 2);

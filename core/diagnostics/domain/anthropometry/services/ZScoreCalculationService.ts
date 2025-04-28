@@ -1,6 +1,6 @@
-import { evaluateFormula, handleError, Result } from "@shared";
+import { evaluateFormula, handleError, Result, Sex } from "@shared";
 import { AnthropometricVariableObject } from "../common";
-import { Indicator, GrowthReferenceChart, GrowthStandard } from "../models";
+import { Indicator, GrowthReferenceChart, GrowthStandard, GrowthReferenceTable } from "../models";
 import { IZScoreCalculationService } from "./interfaces/ZScoreCalculationService";
 import { ZScoreComputingStrategy } from "../policies/interfaces/ZScoreComputingStrategy";
 import { GROWTH_INDICATOR_ERRORS, handleGrowthIndicatorError } from "../errors";
@@ -11,10 +11,10 @@ export class ZScoreCalculationService implements IZScoreCalculationService {
    private findStrategy(indicator: Indicator, standard: GrowthStandard): ZScoreComputingStrategy | undefined {
       return this.strategies.find((strategy) => strategy.type === indicator.getZScoreComputingStrategyType() && strategy.standard === standard);
    }
-   async calculateZScore(
+   async calculateZScore<T extends GrowthReferenceChart | GrowthReferenceTable>(
       data: AnthropometricVariableObject,
       indicator: Indicator,
-      chart: GrowthReferenceChart,
+      growthRef: T,
       standard: GrowthStandard,
    ): Promise<Result<number>> {
       try {
@@ -29,15 +29,16 @@ export class ZScoreCalculationService implements IZScoreCalculationService {
          const axeX = evaluateFormula(indicator.getAxeX().value, data) as number;
          const axeY = evaluateFormula(indicator.getAxeY().value, data) as number;
 
-         const zscore = strategy.computeZScore({
+         const zscore = strategy.computeZScore<T>({
             measurements: { x: axeX, y: axeY },
-            growthReferenceChart: chart,
+            growthReference: growthRef,
+            sex: data.sex as Sex,
          });
 
          if (isNaN(zscore)) {
             return handleGrowthIndicatorError(
                GROWTH_INDICATOR_ERRORS.CALCULATION.INVALID_RESULT.path,
-               `ZScore : ${zscore}, Indicator: ${indicator.getCode()}, Chart: ${chart.getCode()}, Standard: ${standard}`,
+               `ZScore : ${zscore}, Indicator: ${indicator.getCode()}, GrowthRef: ${growthRef.getCode()}, Standard: ${standard}`,
             );
          }
 

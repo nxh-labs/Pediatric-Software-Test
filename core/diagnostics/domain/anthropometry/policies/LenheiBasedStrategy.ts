@@ -1,14 +1,28 @@
 import { ArgumentInvalidException } from "@shared";
-import { GrowthStandard, MAX_LENHEI, MAX_WEIGHT, MIN_LENHEI, MIN_WEIGHT, ZScoreComputingStrategyType } from "../models";
+import {
+   GrowthReferenceChart,
+   GrowthReferenceTable,
+   GrowthStandard,
+   MAX_LENHEI,
+   MAX_WEIGHT,
+   MIN_LENHEI,
+   MIN_WEIGHT,
+   ZScoreComputingStrategyType,
+} from "../models";
 import { IAnthroComputingHelper } from "./interfaces/AnthroComputingHelper";
-import { ZScoreComputingData, ZScoreComputingStrategy } from "./interfaces/ZScoreComputingStrategy";
+import { AbstractZScoreComputingStrategy, ZScoreComputingData } from "./interfaces/ZScoreComputingStrategy";
 
-export class LenheiBasedStrategy implements ZScoreComputingStrategy {
+export class LenheiBasedStrategy extends AbstractZScoreComputingStrategy {
    standard: GrowthStandard = GrowthStandard.OMS;
    type: ZScoreComputingStrategyType = ZScoreComputingStrategyType.LENHEIBASED;
-   constructor(private anthropComputingHelper: IAnthroComputingHelper) {}
-   computeZScore(data: ZScoreComputingData): number {
-      const { growthReferenceChart, measurements } = data;
+   constructor(private anthropComputingHelper: IAnthroComputingHelper) {
+      super();
+   }
+   computeZScore<T extends GrowthReferenceChart | GrowthReferenceTable>(data: ZScoreComputingData<T>): number {
+      const isTable = this.isGrowthReferenceTable(data.growthReference);
+      if (isTable) return NaN;
+      const measurements = data.measurements;
+      const growthReferenceChart = data.growthReference as GrowthReferenceChart;
       if (growthReferenceChart.getStandard() != this.standard) {
          throw new ArgumentInvalidException(`The provided GrowthReferenceChart is invalid. Please chose GrowthReferenceChart of ${this.standard}`);
       }

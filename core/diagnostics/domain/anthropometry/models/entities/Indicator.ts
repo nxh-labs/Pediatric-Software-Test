@@ -11,9 +11,12 @@ import {
 } from "@shared";
 import {
    AvailableChart,
+   AvailableTable,
    CreateAvailableChart,
+   CreateAvailableTableProps,
    CreateIndicatorInterpreter,
    IAvailableChart,
+   IAvailableTable,
    IIndicatorInterpreter,
    IndicatorInterpreter,
 } from "../valueObjects";
@@ -42,6 +45,7 @@ export interface IIndicator extends EntityPropsBaseType {
    interpretations: IndicatorInterpreter[];
    zScoreComputingStrategy: ZScoreComputingStrategyType;
    standardShape: StandardShape;
+   availableRefTables: AvailableTable[];
 }
 export interface CreateIndicatorProps {
    code: string;
@@ -50,6 +54,7 @@ export interface CreateIndicatorProps {
    axeX: IFormula;
    axeY: IFormula;
    availableRefCharts: CreateAvailableChart[];
+   availableRefTables: CreateAvailableTableProps[];
    usageConditions: ICondition;
    interpretations: CreateIndicatorInterpreter[];
    zScoreComputingStrategy: ZScoreComputingStrategyType;
@@ -72,7 +77,10 @@ export class Indicator extends Entity<IIndicator> {
       return this.props.axeX.unpack();
    }
    getAvailableCharts(): IAvailableChart[] {
-      return this.props.availableRefCharts.map((charts) => charts.unpack());
+      return this.props.availableRefCharts.map((chart) => chart.unpack());
+   }
+   getAvailableTables(): IAvailableTable[] {
+      return this.props.availableRefTables.map((table) => table.unpack());
    }
    getUsageCondition(): ICondition {
       return this.props.usageConditions.unpack();
@@ -82,6 +90,9 @@ export class Indicator extends Entity<IIndicator> {
    }
    getZScoreComputingStrategyType(): ZScoreComputingStrategyType {
       return this.props.zScoreComputingStrategy;
+   }
+   getStandardShape(): StandardShape {
+      return this.props.standardShape;
    }
    changeName(name: string) {
       this.props.name = name;
@@ -100,6 +111,10 @@ export class Indicator extends Entity<IIndicator> {
       this.props.availableRefCharts = availableCharts;
       this.validate();
    }
+   changeAvailableTables(availableTables: AvailableTable[]) {
+      this.props.availableRefTables = availableTables;
+      this.validate();
+   }
    changeUsageCondition(condition: Condition) {
       this.props.usageConditions = condition;
       this.validate();
@@ -110,6 +125,10 @@ export class Indicator extends Entity<IIndicator> {
    }
    changeZScoreComputingStrategyType(strategyType: ZScoreComputingStrategyType) {
       this.props.zScoreComputingStrategy = strategyType;
+      this.validate();
+   }
+   changeStandardShape(standardShape: StandardShape) {
+      this.props.standardShape = standardShape;
       this.validate();
    }
    public validate(): void {
@@ -136,6 +155,7 @@ export class Indicator extends Entity<IIndicator> {
          const codeRes = SystemCode.create(createIndicatorProps.code);
          const neededMeasureCodesRes = createIndicatorProps.neededMeasureCodes.map(SystemCode.create);
          const availableRefChartsRes = createIndicatorProps.availableRefCharts.map(AvailableChart.create);
+         const availableRefTablesRes = createIndicatorProps.availableRefTables.map(AvailableTable.create);
          const axeXFormulaRes = Formula.create(createIndicatorProps.axeX);
          const axeYFormulaRes = Formula.create(createIndicatorProps.axeY);
          const conditionRes = Condition.create(createIndicatorProps.usageConditions);
@@ -147,6 +167,7 @@ export class Indicator extends Entity<IIndicator> {
             conditionRes,
             ...neededMeasureCodesRes,
             ...availableRefChartsRes,
+            ...availableRefTablesRes,
             ...interpretationsRes,
          ]);
          if (combineRes.isFailure) return Result.fail(String(combineRes.err));
@@ -160,6 +181,7 @@ export class Indicator extends Entity<IIndicator> {
                   axeX: axeXFormulaRes.val,
                   axeY: axeYFormulaRes.val,
                   availableRefCharts: availableRefChartsRes.map((res) => res.val),
+                  availableRefTables: availableRefTablesRes.map((res) => res.val),
                   usageConditions: conditionRes.val,
                   interpretations: interpretationsRes.map((res) => res.val),
                   zScoreComputingStrategy: createIndicatorProps.zScoreComputingStrategy,

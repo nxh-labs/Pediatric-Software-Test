@@ -8,7 +8,7 @@ import { ConditionResult, evaluateCondition, formatError, handleError, Result, S
 import { Indicator, AnthropometricMeasure, GrowthIndicatorValue, GrowthStandard, CreateGrowthIndicatorValueProps, StandardShape } from "../models";
 import { AnthropometricMeasureRepository, IndicatorRepository, IGrowthIndicatorService } from "../ports";
 import { AnthropometricVariableObject } from "../common";
-import { IChartSelectionService } from "./interfaces/ChartSelectionService";
+import { IReferenceSelectionService } from "./interfaces/GrowthReferenceSelectionService";
 import { IZScoreCalculationService } from "./interfaces/ZScoreCalculationService";
 import { IZScoreInterpretationService } from "./interfaces/ZScoreInterpretationService";
 
@@ -32,7 +32,7 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
    constructor(
       private anthropometricMeasureRepo: AnthropometricMeasureRepository,
       private indicatorRepo: IndicatorRepository,
-      private chartService: IChartSelectionService,
+      private growthReferenceSelectionService: IReferenceSelectionService,
       private zScoreService: IZScoreCalculationService,
       private interpretationService: IZScoreInterpretationService,
    ) {}
@@ -172,13 +172,15 @@ export class GrowthIndicatorService implements IGrowthIndicatorService {
       standard: GrowthStandard = GrowthStandard.OMS,
    ): Promise<Result<GrowthIndicatorValue>> {
       try {
-         //TODO: Ici je pourrai verifier si l'indicateur veux utiliser un chat ou un table donc notre logique de table pourra s'y intégrer facilement
-         // 1. Select appropriate chart
-         const chartResult = await this.chartService.selectChartForIndicator(data, indicator, standard);
-         if (chartResult.isFailure) return Result.fail(formatError(chartResult, GrowthIndicatorService.name));
+         // 1. Select appropriate Ref
+         const growthRef =
+            indicator.getStandardShape() === StandardShape.CURVE
+               ? await this.growthReferenceSelectionService.selectChartForIndicator(data, indicator, standard)
+               : await this.growthReferenceSelectionService.selectTableForIndicator(data, indicator, standard);
+         if (growthRef.isFailure) return Result.fail(formatError(growthRef, GrowthIndicatorService.name));
 
          // 2. Calculate z-score
-         const zScoreResult = await this.zScoreService.calculateZScore(data, indicator, chartResult.val, standard);
+         const zScoreResult = await this.zScoreService.calculateZScore<typeof growthRef.val>(data, indicator, growthRef.val, standard);
          if (zScoreResult.isFailure) return Result.fail(formatError(zScoreResult, GrowthIndicatorService.name));
 
          // 3. Find interpretation

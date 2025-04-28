@@ -2,6 +2,19 @@ import { AggregateID, EmptyStringError, Entity, EntityPropsBaseType, formatError
 import { GrowthStandard } from "../constants";
 import { ITableData, TableData } from "../valueObjects";
 
+/**
+ * @interface IGrowthReferenceTable
+ * @property {string} name - C'est le nom de la table de reference
+ * @property {string} standard - C'est la norme que cette table utiliser
+ * @property {SystemCode} code - C'est le code de cette table au niveau du systeme
+ * @property {TableData} data - Ce sont les données au niveau de chaque row
+ *
+ * @NOTE
+ * ```ts
+ * // Si jamais c'est la taille pour les tables unisexe c'est cette facons on va utliser pour pouvoir l'arround depuis le x au lieu de l'ecrie explicitement dans le code : Cela est propre a chaque table
+ * const arroundHeight = `(height - (height % 1)) + ((height % 1)<=0.2 ? 0:((height %1)>=0.8?1:0.5))`
+ * ```
+ */
 export interface IGrowthReferenceTable extends EntityPropsBaseType {
    name: string;
    code: SystemCode;
@@ -27,6 +40,7 @@ export class GrowthReferenceTable extends Entity<IGrowthReferenceTable> {
    getTableData(): ITableData[] {
       return this.props.data.map((tableData) => tableData.unpack());
    }
+
    changeName(name: string) {
       this.props.name = name;
       this.validate();

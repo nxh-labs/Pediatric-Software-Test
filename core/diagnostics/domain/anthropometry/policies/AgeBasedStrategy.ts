@@ -2,6 +2,7 @@ import {
    DAY_IN_MONTHS,
    DAY_IN_YEARS,
    GrowthReferenceChart,
+   GrowthReferenceTable,
    GrowthStandard,
    IChartData,
    MAX_AGE_IN_PEDIATRIC,
@@ -9,25 +10,29 @@ import {
    ZScoreComputingStrategyType,
 } from "../models";
 import { IAnthroComputingHelper } from "./interfaces/AnthroComputingHelper";
-import { ZScoreComputingData, ZScoreComputingStrategy } from "./interfaces/ZScoreComputingStrategy";
+import { AbstractZScoreComputingStrategy, ZScoreComputingData } from "./interfaces/ZScoreComputingStrategy";
 
-export class AgeBasedStrategy implements ZScoreComputingStrategy {
+export class AgeBasedStrategy extends AbstractZScoreComputingStrategy {
    standard: GrowthStandard = GrowthStandard.OMS;
    type: ZScoreComputingStrategyType = ZScoreComputingStrategyType.AGEBASED;
-   constructor(private anthroComputingHelper: IAnthroComputingHelper) {}
-   computeZScore(data: ZScoreComputingData): number {
-      const { measurements, growthReferenceChart } = data;
+   constructor(private anthroComputingHelper: IAnthroComputingHelper) {
+      super();
+   }
+   computeZScore<T extends GrowthReferenceChart | GrowthReferenceTable>(data: ZScoreComputingData<T>): number {
+      const isTable = this.isGrowthReferenceTable(data.growthReference);
+      if (isTable) return NaN;
+      const { measurements, growthReference: growthReferenceChart } = data;
       const { x, y } = measurements;
       const age_in_day = x;
       // Verification de age
       if (age_in_day <= MAX_AGE_TO_USE_AGE_IN_DAY) {
-         const standard = this.findGrowthStandardWhenAgeIsInDay(age_in_day, growthReferenceChart);
+         const standard = this.findGrowthStandardWhenAgeIsInDay(age_in_day, growthReferenceChart as GrowthReferenceChart);
          if (!standard) return NaN;
          return Math.round(this.anthroComputingHelper.computeZScoreAdjusted(y, standard.l, standard.median, standard.s));
       }
       if (age_in_day <= MAX_AGE_IN_PEDIATRIC * DAY_IN_YEARS) {
          const age_in_month = age_in_day / DAY_IN_MONTHS;
-         const standard = this.findGrowthStandardWhenAgeIsInMonth(age_in_month, growthReferenceChart);
+         const standard = this.findGrowthStandardWhenAgeIsInMonth(age_in_month, growthReferenceChart as GrowthReferenceChart);
          if (!standard) return NaN;
          return Math.round(this.anthroComputingHelper.computeZScoreAdjusted(y, standard.l, standard.median, standard.s));
       }
