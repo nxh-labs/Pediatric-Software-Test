@@ -10,17 +10,17 @@ import {
    UpdateGrowthReferenceChartRequest,
    UpdateGrowthReferenceChartResponse,
 } from "../useCases";
-import { IGrowthReferenceService } from "./interfaces";
+import { IGrowthReferenceChartService } from "./interfaces";
 import { GrowthReferenceChartDto } from "../dtos";
 
-export interface GrowthReferenceServiceUseCases {
+export interface GrowthReferenceTChartServiceUseCases {
    createUC: UseCase<CreateGrowthReferenceChartRequest, CreateGrowthReferenceChartResponse>;
    getUC: UseCase<GetGrowthReferenceChartRequest, GetGrowthReferenceChartResponse>;
    deleteUC: UseCase<DeleteGrowthReferenceChartRequest, DeleteGrowthReferenceChartResponse>;
    updateUC: UseCase<UpdateGrowthReferenceChartRequest, UpdateGrowthReferenceChartResponse>;
 }
-export class GrowthReferenceService implements IGrowthReferenceService {
-   constructor(private readonly ucs: GrowthReferenceServiceUseCases) {}
+export class GrowthReferenceChartService implements IGrowthReferenceChartService {
+   constructor(private readonly ucs: GrowthReferenceTChartServiceUseCases) {}
    async create(req: CreateGrowthReferenceChartRequest): Promise<AppServiceResponse<{ id: AggregateID }> | Message> {
       const res = await this.ucs.createUC.execute(req);
       if (res.isRight()) return { data: res.value.val };

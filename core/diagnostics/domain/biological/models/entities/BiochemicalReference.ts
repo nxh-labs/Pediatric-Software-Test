@@ -12,7 +12,16 @@ import {
    UnitCode,
 } from "@shared";
 import { BiochemicalRange, CreateBiochemicalRange, IBiochemicalRange } from "./../valueObjects";
-
+/**
+ * @interface IBiochemicalReference - C'est la référence des données biologiques
+ * @property {string} name - C'est le nom de la valeur biologique mésurée. ex: Glycémie , ou Taux d'hemoglobine 
+ * @property {SystemCode} code - C'est le code que le système a donner a cette valeur biologique 
+ * @property {UnitCode} unit - Contient l'unité par defaut dans laquelle est définie les valeurs des differents ranges 
+ * @property {UnitCode[]} availableUnits - C'est l'ensemble des unités que peut prendre en charge cette valeur bioloque. Donc le user peut utiliser une unité entre ceux la si non une erreur sera générée 
+ * @property {BiochemicalRange[]} ranges - c'est l'ensemble des intervalles normales de cette valeur biologique. chacune de ces intervalles disposes de condition de modultation pour signifier que par exemple le taux de glycemie pour affimer une hypoglycemie n'est pas la meme chez tout les patients (physiologiquement) 
+ * @property {string} source - C'est la source de la valeur de référence que nous utilisons 
+ * @property {string[]} notes - C'est l'ensembe des notes plus ou moins importantes 
+ */
 export interface IBiochemicalReference extends EntityPropsBaseType {
    name: string;
    code: SystemCode;

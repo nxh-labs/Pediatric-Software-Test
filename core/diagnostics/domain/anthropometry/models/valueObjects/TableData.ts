@@ -20,6 +20,7 @@ export interface ITableData {
    sex: Sex;
 }
 
+
 export class TableData extends ValueObject<ITableData> {
    protected validate(props: Readonly<ITableData>): void {
       const isNumbers = [

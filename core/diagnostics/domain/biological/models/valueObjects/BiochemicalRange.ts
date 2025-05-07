@@ -14,7 +14,8 @@ export interface IBiochemicalRange {
       min: [value: number, notStrict: boolean];
       max: [value: number, notStrict: boolean];
    };
-   under: string[]; // Same here:But i'm not fix this for the moment
+   under: string[]; // Same here:But i'm not fix this for the moment || FIXME: je sais quoi faire maintenant. nous pouvons lier cette deduction a un sign clinic par exemple le patient a une peau pale on fera une deduction en disante que la personne a une anémie bon en tout cas ce n'est pas encore totalement claire maintenant 
+   
    over: string[]; // the note when the patient is in over this biochemical Reference
 }
 export interface CreateBiochemicalRange {

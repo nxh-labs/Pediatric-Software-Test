@@ -1,6 +1,5 @@
 import {
    AggregateID,
-   ArgumentOutOfRangeException,
    EmptyStringError,
    Entity,
    EntityPropsBaseType,
@@ -21,7 +20,7 @@ import {
    IndicatorInterpreter,
 } from "../valueObjects";
 import { Condition, Formula, ICondition, IFormula } from "../../../common";
-import { GrowthIndicatorRange, StandardShape, ZScoreComputingStrategyType } from "../constants";
+import { StandardShape, ZScoreComputingStrategyType } from "../constants";
 
 /**
  * `Indicator`
@@ -134,22 +133,23 @@ export class Indicator extends Entity<IIndicator> {
    public validate(): void {
       this._isValid = false;
       if (Guard.isEmpty(this.props.name).succeeded) throw new EmptyStringError("The name of Indicator can't be empty.");
-      if (Object.values(GrowthIndicatorRange).length < this.props.interpretations.length)
-         throw new ArgumentOutOfRangeException("La liste des interpretations possibles ne peut depasser les ranges de valeurs possibles.");
-      this.validateIfInterpretationRangeIsUnique();
+      // if (Object.values(GrowthIndicatorRange).length < this.props.interpretations.length)
+      //    throw new ArgumentOutOfRangeException("La liste des interpretations possibles ne peut depasser les ranges de valeurs possibles.");
+      // this.validateIfInterpretationRangeIsUnique();
       this._isValid = true;
    }
-   private validateIfInterpretationRangeIsUnique() {
-      const interpretationRange = new Set();
-      for (const interpretation of this.props.interpretations) {
-         const range = interpretation.unpack().range;
-         if (interpretationRange.has(range)) {
-            throw new ArgumentOutOfRangeException("On ne peut avoir qu'une seule interpretation pour un range.");
-         } else {
-            interpretationRange.add(range);
-         }
-      }
-   }
+   // FIXME: Cette validation des ranges n'est pas conforme lors du traitement de donnée j'ai donc décidé de le desactivé pour le moment puisque par exemple pour la bmi for age , elle a une interpretion differnte chez les patients ayant un age inferieur a 5 ans et superieur a 5 ans .
+   // private validateIfInterpretationRangeIsUnique() {
+   //    const interpretationRange = new Set();
+   //    for (const interpretation of this.props.interpretations) {
+   //       const range = interpretation.unpack().range;
+   //       if (interpretationRange.has(range)) {
+   //          throw new ArgumentOutOfRangeException("On ne peut avoir qu'une seule interpretation pour un range.");
+   //       } else {
+   //          interpretationRange.add(range);
+   //       }
+   //    }
+   // }
    static create(createIndicatorProps: CreateIndicatorProps, id: AggregateID): Result<Indicator> {
       try {
          const codeRes = SystemCode.create(createIndicatorProps.code);

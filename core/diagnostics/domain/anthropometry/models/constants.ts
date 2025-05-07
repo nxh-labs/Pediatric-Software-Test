@@ -70,6 +70,8 @@ export const MONTH_IN_YEARS = 12;
  * @constant
  */
 export const MAX_AGE_IN_PEDIATRIC = 19;
+export const MAX_AGE_IN_DAY_TO_USE_AGE_IN_DAY = 1856;
+export const MAX_AGE_MONTH_TO_USE_AGE_IN_DAY = MAX_AGE_IN_DAY_TO_USE_AGE_IN_DAY / DAY_IN_MONTHS;
 
 /**
  * @enum AnthroSystemCodes
@@ -130,3 +132,4 @@ export enum ZScoreComputingStrategyType {
    TABLEBASED = "table_based",
 }
 export const DAY_IN_TWO_YEARS = Math.round(DAY_IN_YEARS * 2);
+export const ZScoreVarName = "zscore";

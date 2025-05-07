@@ -1,6 +1,6 @@
 import { ConditionResult, evaluateCondition, handleError, Result } from "@shared";
 import { AnthropometricVariableObject } from "../common";
-import { Indicator, IndicatorInterpreter } from "../models";
+import { Indicator, IndicatorInterpreter, ZScoreVarName } from "../models";
 import { IZScoreInterpretationService } from "./interfaces/ZScoreInterpretationService";
 import { GROWTH_INDICATOR_ERRORS, handleGrowthIndicatorError } from "../errors";
 
@@ -11,7 +11,10 @@ export class ZScoreInterpretationService implements IZScoreInterpretationService
          const interpretations = indicator.getProps().interpretations;
          const interpretation = interpretations.find((interp) => {
             const { condition } = interp.unpack();
-            const conditionResult = evaluateCondition(condition.unpack().value, { ...data, z: zScore });
+            const conditionEvaluationContext = data;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (conditionEvaluationContext as any)[ZScoreVarName] = zScore;
+            const conditionResult = evaluateCondition(condition.unpack().value, conditionEvaluationContext);
             return conditionResult === ConditionResult.True;
          });
 

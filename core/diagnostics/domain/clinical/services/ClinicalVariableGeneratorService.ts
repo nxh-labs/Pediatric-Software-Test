@@ -1,4 +1,4 @@
-import { handleError, Result } from "@shared";
+import { ConditionResult, handleError, Result } from "@shared";
 import { ClinicalNutritionalAnalysisResult } from "../models";
 import { ClinicalSignReferenceRepository, ClinicalVariableObject, IClinicalVariableGeneratorService } from "../ports";
 
@@ -10,7 +10,7 @@ export class ClinicalVariableGeneratorService implements IClinicalVariableGenera
          const clinicalAnalysisCodes = clinicalAnalysis.map((clinicalAn) => clinicalAn.unpack().clinicalSign.unpack());
          const clinicalVariableObject: ClinicalVariableObject = {};
          for (const clinicalRefCode of clinicalReferencesCode) {
-            clinicalVariableObject[clinicalRefCode] = clinicalAnalysisCodes.includes(clinicalRefCode) ? "True" : "False";
+            clinicalVariableObject[clinicalRefCode] = clinicalAnalysisCodes.includes(clinicalRefCode) ? ConditionResult.True : ConditionResult.False;
          }
          return Result.ok(clinicalVariableObject);
       } catch (e: unknown) {

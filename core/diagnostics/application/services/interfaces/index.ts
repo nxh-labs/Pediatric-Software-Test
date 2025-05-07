@@ -2,6 +2,7 @@ export * from "./AnthropometricMeasureService";
 export * from "./BiochemicalReferenceService";
 export * from "./ClinicalSignReferenceService";
 export * from "./GrowthIndicatorService";
-export * from "./GrowthReferenceService";
+export * from "./GrowthReferenceChartService";
+export * from "./GrowthReferenceTableService";
 export * from "./NutritionalDiagnosticService";
 export * from "./NutritionalRiskFactorService";

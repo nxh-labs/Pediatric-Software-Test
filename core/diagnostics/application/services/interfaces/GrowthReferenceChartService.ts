@@ -7,7 +7,7 @@ import {
 } from "../../useCases";
 import { GrowthReferenceChartDto } from "../../dtos";
 
-export interface IGrowthReferenceService {
+export interface IGrowthReferenceChartService {
    create(req: CreateGrowthReferenceChartRequest): Promise<AppServiceResponse<{ id: AggregateID }> | Message>;
    get(req: GetGrowthReferenceChartRequest): Promise<AppServiceResponse<GrowthReferenceChartDto[]> | Message>;
    update(req: UpdateGrowthReferenceChartRequest): Promise<AppServiceResponse<GrowthReferenceChartDto> | Message>;
