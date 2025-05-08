@@ -23,7 +23,7 @@ export class DomainDate extends ValueObject<string> {
       if (Guard.isEmpty(props._value).succeeded) {
          throw new ArgumentNotProvidedException("The date must be empty.");
       }
-     
+
       const dateFormatsRegex = [
          /^\d{4}-\d{2}-\d{2}$/, // YYYY-MM-DD
          /^\d{2}\/\d{2}\/\d{4}$/, // DD/MM/YYYY
@@ -41,7 +41,7 @@ export class DomainDate extends ValueObject<string> {
       if (!validFormat) {
          throw new InvalidArgumentFormatError("Invalid date format. Use the format YYYY-MM-DD, DD/MM/YYYY or MM/DD/YYYY.");
       }
-   
+
       const parts = props._value.split(/[/-]/);
       let year, month, day;
 
@@ -102,7 +102,15 @@ export class DomainDate extends ValueObject<string> {
 
       return thisDate > otherDate;
    }
-
+   public diffInDays(otherDate: DomainDate): number {
+      const thisDate = new Date(this.props._value);
+      const compareDate = new Date(otherDate.getDate());
+      // Normalize both dates to midnight
+      thisDate.setHours(0, 0, 0, 0);
+      compareDate.setHours(0, 0, 0, 0);
+      const diffMilliseconds = Math.abs(thisDate.getTime() - compareDate.getTime());
+      return Math.floor(diffMilliseconds / (1000 * 60 * 60 * 24));
+   }
    toString(): string {
       return this.props._value;
    }

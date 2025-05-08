@@ -3,7 +3,7 @@ import { AnthroSystemCodes, CLINICAL_SIGNS, BIOCHEMICAL_REF_CODES, COMPLICATION_
 import { APPETITE_TEST_CODES, APPETITE_TEST_RESULT_CODES } from "../../../modules";
 import { AggregateID, DomainDate, Entity, EntityPropsBaseType, handleError, Result } from "@shared";
 
-type ValueType<T> = {
+export type ValueType<T> = {
    value: T;
    code: string;
    date: DomainDate;
@@ -26,19 +26,11 @@ export interface CreateCurrentStateProps {
 
 export class PatientCurrentState extends Entity<IPatientCurrentState> {
    addAnthropometricData(code: AnthroSystemCodes, value: number, date: DomainDate) {
-      this.props.anthropometricData[code] = {
-         value,
-         date,
-         code,
-      };
+      this.props.anthropometricData[code] = { value, date, code };
       this.validate();
    }
    addBiologicalData(code: (typeof BIOCHEMICAL_REF_CODES)[keyof typeof BIOCHEMICAL_REF_CODES], value: number, date: DomainDate) {
-      this.props.biologicalData[code] = {
-         code,
-         value,
-         date,
-      };
+      this.props.biologicalData[code] = { code, value, date };
    }
    addClinicalSignData(
       code: (typeof CLINICAL_SIGNS)[keyof typeof CLINICAL_SIGNS],
@@ -47,12 +39,11 @@ export class PatientCurrentState extends Entity<IPatientCurrentState> {
    ) {
       this.props.clinicalSignData[code] = { code, value, date };
    }
+   addAppetiteTestResult(code: string, value: APPETITE_TEST_RESULT_CODES, date: DomainDate) {
+      this.props.appetiteTestResult[code] = { code, value, date };
+   }
    addComplication(code: string, value: number, date: DomainDate) {
-      this.props.complicationData[code] = {
-         code,
-         value,
-         date,
-      };
+      this.props.complicationData[code] = { code, value, date };
    }
    getAnthroVariables(): Record<string, number> {
       return Object.fromEntries(Object.values(this.props.anthropometricData).map((value) => [value.code, value.value]));
