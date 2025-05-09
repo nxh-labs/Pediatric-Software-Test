@@ -5,5 +5,5 @@ export interface PatientCareSessionCreatedData {
    patientId: AggregateID;
 }
 
-@DomainEventMessage("New Patient Care Session is Created.", true)
+@DomainEventMessage("New Patient Care Session is Created. Need the data collector.", true)
 export class PatientCareSessionCreatedEvent extends DomainEvent<PatientCareSessionCreatedData> {}

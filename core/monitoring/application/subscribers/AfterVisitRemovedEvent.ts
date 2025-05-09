@@ -14,3 +14,4 @@ export class AfterVisitRemovedEventOnMonitoring extends EventHandler<VisitRemove
    }
 }
 bindEventHandler(AfterVisitRemovedEventOnMonitoring, VisitRemovedEvent);
+

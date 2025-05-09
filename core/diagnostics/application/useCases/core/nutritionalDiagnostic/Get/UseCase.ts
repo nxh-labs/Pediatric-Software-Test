@@ -15,7 +15,7 @@ export class GetNutritionalDiagnosticUseCase implements UseCase<GetNutritionalDi
          if (request.nutritionalDiagnosticId && !request.patientId) {
             nutritionalDiagnostics.push(await this.nutritionalDiagnosticRepo.getById(request.nutritionalDiagnosticId));
          } else if (request.patientId && !request.nutritionalDiagnosticId) {
-            nutritionalDiagnostics.push(...(await this.nutritionalDiagnosticRepo.getByPatient(request.patientId)));
+            nutritionalDiagnostics.push(await this.nutritionalDiagnosticRepo.getByPatient(request.patientId))
          } else {
             // CHECK: Verifier si c'est bien judicieux de le faire de la sorte ou bien de retourner tout
             nutritionalDiagnostics.push();
