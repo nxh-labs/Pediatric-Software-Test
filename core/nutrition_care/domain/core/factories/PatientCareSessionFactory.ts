@@ -1,5 +1,5 @@
 import { AggregateID, DomainDate, EntityPropsBaseType, Factory, formatError, GenerateUniqueId, handleError, Result, SystemCode } from "@shared";
-import { ClinicalEvent, PatientCareSession, PatientCurrentState } from "../models";
+import { ClinicalEvent, PatientCareSession, PatientCareSessionStatus, PatientCurrentState } from "../models";
 import { ORIENTATION_REF_CODES } from "../../../../constants";
 import { AppetiteTestResult } from "../../modules";
 import { IPatientDailyJournalGenerator } from "../ports";
@@ -40,7 +40,7 @@ export class PatientCareSessionFactory implements Factory<CreatePatientCareSessi
                carePhases: [],
                dailyJournals: [],
                currentState: patientCurrentStateRes.val,
-               status: "not_ready",
+               status: PatientCareSessionStatus.NOT_READY,
             },
          });
          const result = this.patientDailyJournalGenerator.createDailyJournalIfNeeded(patientCareSession);

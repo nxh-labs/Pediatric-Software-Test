@@ -14,7 +14,11 @@ import { AppetiteTestResult, OrientationResult } from "../../../modules";
 import { CarePhase, DailyCareJournal, PatientCurrentState } from "../entities";
 import { ClinicalEvent, ClinicalEventType, MonitoringEntry, MonitoringEntryType, NutritionalTreatmentAction } from "../valueObjects";
 import { PatientCareSessionCreatedEvent } from "../../events";
-
+export enum PatientCareSessionStatus {
+   NOT_READY = "not_ready",
+   IN_PROGRESS = "in_progress",
+   COMPLETED = "completed",
+}
 export interface IPatientCareSession extends EntityPropsBaseType {
    patientId: AggregateID;
    startDate: DomainDate;
@@ -25,7 +29,7 @@ export interface IPatientCareSession extends EntityPropsBaseType {
    currentState: PatientCurrentState;
    dailyJournals: DailyCareJournal[];
    currentDailyJournal?: DailyCareJournal;
-   status: "not_ready" | "in_progress" | "completed";
+   status: PatientCareSessionStatus;
 }
 //BETA:  On peut avoir dans la version suivante la notion de treatment active, qui lui va intégrer la notion de durée du traitement
 
@@ -103,11 +107,17 @@ export class PatientCareSession extends AggregateRoot<IPatientCareSession> {
    changeOrientationResult(orientationResult: OrientationResult) {
       this.props.orientation = orientationResult;
    }
+   changeStatus(status: PatientCareSessionStatus) {
+      this.props.status = status;
+   }
    haveCurrentDailyJournal(): boolean {
       return this.props.currentDailyJournal != undefined;
    }
+   isNotReady(): boolean {
+      return this.props.status === PatientCareSessionStatus.NOT_READY;
+   }
    endCareSession() {
-      this.props.status = "completed";
+      this.props.status = PatientCareSessionStatus.COMPLETED;
       this.props.endDate = new DomainDate();
    }
    private checkIfDailyJournalIsAdded() {
