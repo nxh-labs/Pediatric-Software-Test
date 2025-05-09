@@ -1,6 +1,7 @@
 import { Result, SystemCode } from "@shared";
 import { CLINICAL_SIGNS, AnthroSystemCodes, COMPLICATION_CODES } from "../../../../../../constants";
 import { APPETITE_TEST_CODES, APPETITE_TEST_RESULT_CODES } from "../../../appetiteTest";
+import { OrientationReference } from "../../models";
 
 export interface OrientationContext {
    [CLINICAL_SIGNS.EDEMA]: number;
@@ -20,5 +21,5 @@ export interface OrientationResult {
 }
 
 export interface IOrientationService {
-   oriente(orientationContext: OrientationContext): Promise<Result<OrientationResult>>;
+   orient(orientationContext: OrientationContext, orientationRefs: OrientationReference[]): Result<OrientationResult>;
 }

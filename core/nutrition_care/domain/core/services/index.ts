@@ -1,2 +1,2 @@
-export * from "./GenerateDailyCareJournalService";
+export * from "./PatientDailyJournalGenerator";
 export * from "./OrientPatientService";

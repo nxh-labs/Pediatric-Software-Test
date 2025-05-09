@@ -62,8 +62,8 @@ export class PatientCareSession extends AggregateRoot<IPatientCareSession> {
       if (!dailyJournal.getProps().date.isSameDay(new DomainDate())) {
          throw new ArgumentInvalidException("The added journal is not of today.Please only the day journal can't be added.");
       }
-      this.props.currentDailyJournal = dailyJournal;
-      this.props.dailyJournals.push(dailyJournal);
+
+      if (!this.haveCurrentDailyJournal()) this.props.currentDailyJournal = dailyJournal;
    }
    addMonitoringValueToJournal(monitoringEntry: MonitoringEntry) {
       this.checkIfDailyJournalIsAdded();

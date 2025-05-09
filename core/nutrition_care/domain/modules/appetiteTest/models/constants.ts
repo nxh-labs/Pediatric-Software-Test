@@ -6,6 +6,7 @@ export const APPETITE_TEST_CODES = {
 export enum APPETITE_TEST_RESULT_CODES {
    GOOD = "Positive",
    BAD = "Negative",
+   NONE = "None",
 }
 export enum APPETITE_TEST_PRODUCT_TYPE {
    IN_SACHET = "in_sachet",
