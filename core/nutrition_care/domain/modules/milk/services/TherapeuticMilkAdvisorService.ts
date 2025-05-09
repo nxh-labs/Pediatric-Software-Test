@@ -1,17 +1,11 @@
 import { ConditionResult, evaluateCondition, evaluateFormula, formatError, handleError, Result } from "@shared";
-import {
-   IRecommendedMilkPerWeightRange,
-   Milk,
-   MilkSuggestionResult,
-   RecommendedMilkPerDay,
-} from "../models";
-import { ITherapeuticMilkAdvisorService, MilkRepository, MilkSuggestionInput } from "../ports";
+import { IRecommendedMilkPerWeightRange, Milk, MilkSuggestionResult, RecommendedMilkPerDay } from "../models";
+import { ITherapeuticMilkAdvisorService, MilkSuggestionInput } from "../ports";
 
 export class TherapeuticMilkAdvisorService implements ITherapeuticMilkAdvisorService {
-   constructor(private readonly repo: MilkRepository) {}
-   async suggest(input: MilkSuggestionInput): Promise<Result<MilkSuggestionResult>> {
+   constructor() {}
+    suggest(input: MilkSuggestionInput, milks: Milk[]):Result<MilkSuggestionResult> {
       try {
-         const milks = await this.getAllSystemMilk();
          const milk = this.getMilkByCondition(input, milks);
          if (milk.isFailure) return Result.fail("Milk is not found.");
          const milkSuggestedResult = this.getMilkSuggestionResult(input, milk.val);
@@ -21,9 +15,7 @@ export class TherapeuticMilkAdvisorService implements ITherapeuticMilkAdvisorSer
          return handleError(e);
       }
    }
-   private async getAllSystemMilk(): Promise<Milk[]> {
-      return await this.repo.getAll();
-   }
+
    private getMilkByCondition(input: MilkSuggestionInput, milks: Milk[]): Result<Milk> {
       try {
          for (const milk of milks) {
