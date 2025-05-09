@@ -1,20 +1,16 @@
-import { SystemCode, Result, handleError, formatError } from "@shared";
+import { Result, handleError } from "@shared";
 import { Amount, DosageUnit, IDosageRange, Medicine, MedicineDosageResult } from "../models";
-import { IMedicineDosageService, MedicineRepository } from "../ports";
+import { IMedicineDosageService } from "../ports";
 import { AnthroSystemCodes } from "../../../../../constants";
 
 export class MedicineDosageService implements IMedicineDosageService {
-   constructor(private readonly repo: MedicineRepository) {}
-   async generateDosage(medicineCode: SystemCode, context: { [AnthroSystemCodes.WEIGHT]: number }): Promise<Result<MedicineDosageResult>> {
+   generateDosage(medicine: Medicine, context: { [AnthroSystemCodes.WEIGHT]: number }): Result<MedicineDosageResult> {
       try {
-         const medicineRes = await this.getMedicine(medicineCode);
-         if (medicineRes.isFailure) return Result.fail(formatError(medicineRes, MedicineDosageResult.name));
-         const dailyDosage = this.getMedicineDailyDosage(medicineRes.val, context);
-         const dosageRange = this.getDosageRange(medicineRes.val, context);
+         const dailyDosage = this.getMedicineDailyDosage(medicine, context);
+         const dosageRange = this.getDosageRange(medicine, context);
          if (!dosageRange) {
             return Result.fail("The dosage weight range is not supported.");
          }
-         const medicine = medicineRes.val;
          return MedicineDosageResult.create({
             name: medicine.getName(),
             label: medicine.getBaseDosage().label,
@@ -44,14 +40,5 @@ export class MedicineDosageService implements IMedicineDosageService {
       return dosageRanges.find(
          (range) => range.weightRange.min <= context[AnthroSystemCodes.WEIGHT] && range.weightRange.max > context[AnthroSystemCodes.WEIGHT],
       );
-   }
-
-   private async getMedicine(code: SystemCode): Promise<Result<Medicine>> {
-      try {
-         const medicine = await this.repo.getByCode(code);
-         return Result.ok(medicine);
-      } catch (e) {
-         return handleError(e);
-      }
    }
 }
