@@ -1,3 +1,6 @@
 import { Either, ExceptionBase, Result } from "@shared";
-
-export type OrientResponse = Either<ExceptionBase | unknown, Result<{ name: string; code: string }>>;
+export type OrientationResultDto = {
+    name: string 
+    code: string 
+}
+export type OrientResponse = Either<ExceptionBase | unknown, Result<OrientationResultDto>>;

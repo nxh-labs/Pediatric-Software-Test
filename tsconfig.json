@@ -6,7 +6,8 @@
   ],
   "compilerOptions": {
     "paths" : {
-      "@shared": ["./core/shared"]
+      "@shared": ["./core/shared"],
+      "@core/*": ["./core/*"],
     }
   }
 }

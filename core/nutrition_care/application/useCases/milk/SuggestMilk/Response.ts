@@ -1,4 +1,4 @@
 import { Either, ExceptionBase, Result } from "@shared";
-import { IMilkSuggestionResult } from "../../../../domain";
+import { MilkSuggestionResultDto } from "../../../dtos";
 
-export type SuggestMilkResponse = Either<ExceptionBase | unknown, Result<IMilkSuggestionResult>>;
+export type SuggestMilkResponse = Either<ExceptionBase | unknown, Result<MilkSuggestionResultDto>>;

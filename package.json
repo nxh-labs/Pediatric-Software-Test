@@ -13,6 +13,7 @@
     "@react-spring/web": "^9.7.5",
     "@tailwindcss/vite": "^4.0.13",
     "domain-eventrix": "^1.0.9",
+    "jszip": "^3.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-gifted-charts": "^0.0.12",

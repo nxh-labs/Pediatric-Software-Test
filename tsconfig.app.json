@@ -22,9 +22,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@shared": ["./core/shared"]
+     "@shared": ["./core/shared"],
+      "@core/*": ["./core/*"],
+     
     }
   },
-  "include": ["src","core"],
+  "include": ["src","core","adapter"],
 
 }
