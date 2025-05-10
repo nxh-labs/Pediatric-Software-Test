@@ -11,6 +11,7 @@ export interface CreateBiologicalValue {
    code: string;
    value: number;
    unit: string;
+   recordedAt?: string;
 }
 export class BiologicalValue extends ValueObject<IBiologicalValue> {
    protected validate(props: Readonly<IBiologicalValue>): void {
@@ -23,15 +24,15 @@ export class BiologicalValue extends ValueObject<IBiologicalValue> {
       try {
          const codeRes = SystemCode.create(createProps.code);
          const unitRes = UnitCode.create(createProps.unit);
-         const recordedAt = new DomainDate();
-         const combinedRes = Result.combine([codeRes, unitRes]);
+         const recordedAt = createProps.recordedAt ? DomainDate.create(createProps.recordedAt) : DomainDate.create();
+         const combinedRes = Result.combine([codeRes, unitRes, recordedAt]);
          if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, BiologicalValue.name));
          return Result.ok(
             new BiologicalValue({
                code: codeRes.val,
                unit: unitRes.val,
                value: createProps.value,
-               recordedAt,
+               recordedAt: recordedAt.val,
             }),
          );
       } catch (e: unknown) {

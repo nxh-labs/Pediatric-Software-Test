@@ -1,6 +1,3 @@
-export * from "./VisitPurpose";
-export * from "./ObservationNote";
-export * from "./VisitMeasurement";
 export * from "./AnthropometricData";
 export * from "./BiologicalValue";
 export * from "./Complication";

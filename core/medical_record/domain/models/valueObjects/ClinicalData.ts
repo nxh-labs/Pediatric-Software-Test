@@ -13,6 +13,7 @@ export interface CreateClinicalSignData {
    data: {
       [key: string]: any;
    };
+   recordedAt?: string;
 }
 
 export class ClinicalSignData extends ValueObject<IClinicalSignData> {
@@ -24,13 +25,13 @@ export class ClinicalSignData extends ValueObject<IClinicalSignData> {
    static create(createProps: CreateClinicalSignData): Result<ClinicalSignData> {
       try {
          const codeRes = SystemCode.create(createProps.code);
-         const recordedAt = new DomainDate();
+         const recordedAt = createProps.recordedAt ? DomainDate.create(createProps.recordedAt) : DomainDate.create();
          if (codeRes.isFailure) return Result.fail(formatError(codeRes, ClinicalSignData.name));
          return Result.ok(
             new ClinicalSignData({
                code: codeRes.val,
                data: createProps.data,
-               recordedAt,
+               recordedAt: recordedAt.val,
             }),
          );
       } catch (e: unknown) {

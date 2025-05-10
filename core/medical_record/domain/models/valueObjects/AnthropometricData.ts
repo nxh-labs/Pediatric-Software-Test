@@ -29,6 +29,7 @@ export interface CreateAnthropometricData {
    value: number;
    unit: string;
    context: `${AnthropometricDataContext}`;
+   recordedAt?: string;
 }
 
 export class AnthropometricData extends ValueObject<IAnthropometricData> {
@@ -47,15 +48,15 @@ export class AnthropometricData extends ValueObject<IAnthropometricData> {
       try {
          const codeRes = SystemCode.create(createProps.code);
          const unitRes = UnitCode.create(createProps.unit);
-         const recordedDate = new DomainDate();
-         const combinedRes = Result.combine([codeRes, unitRes]);
+         const recordedDate = createProps.recordedAt ? DomainDate.create(createProps.recordedAt) : DomainDate.create();
+         const combinedRes = Result.combine([codeRes, unitRes, recordedDate]);
          if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, AnthropometricData.name));
          return Result.ok(
             new AnthropometricData({
                code: codeRes.val,
                value: createProps.value,
                unit: unitRes.val,
-               recordedAt: recordedDate,
+               recordedAt: recordedDate.val,
                context: createProps.context as AnthropometricDataContext,
             }),
          );

@@ -27,6 +27,7 @@ export interface CreateDataFieldResponse {
    unit?: string;
    value: number | string | boolean;
    type: DataFieldResponseType;
+   recordedAt?: string;
 }
 export class DataFieldResponse extends ValueObject<IDataFieldResponse> {
    isWithUnit() {
@@ -47,14 +48,15 @@ export class DataFieldResponse extends ValueObject<IDataFieldResponse> {
       try {
          const codeRes = SystemCode.create(createProps.code);
          const unitRes = UnitCode.create(createProps.unit || "kg");
-         const combinedRes = Result.combine([codeRes, unitRes]);
+         const recordedAtRes = createProps.recordedAt ? DomainDate.create(createProps.recordedAt) : DomainDate.create();
+         const combinedRes = Result.combine([codeRes, unitRes, recordedAtRes]);
          if (combinedRes.isFailure) return Result.fail(formatError(combinedRes, DataFieldResponse.name));
          return Result.ok(
             new DataFieldResponse({
                code: codeRes.val,
                unit: createProps.unit ? unitRes.val : undefined,
                value: createProps.value,
-               recodedAt: new DomainDate(),
+               recodedAt: recordedAtRes.val,
                type: createProps.type,
             }),
          );
