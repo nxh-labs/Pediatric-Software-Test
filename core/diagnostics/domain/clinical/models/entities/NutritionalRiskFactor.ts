@@ -26,7 +26,6 @@ import { INutrientImpact, IRecommendedTest, NutrientImpact, RecommendedTest } fr
  * |pale_skin|Fer|Antecedent d'anemie |
  * 
  */
-
 export interface INutritionalRiskFactor extends EntityPropsBaseType {
     clinicalSignCode: SystemCode
     associatedNutrients: NutrientImpact[]

@@ -3,6 +3,19 @@ export enum ZScoreComputingStrategyType {
    LENHEIBASED = "lenhei_based",
    TABLEBASED = "table_based",
 }
+/**
+ * @enum GrowthStandard
+ * Définit les standards de référence pour la croissance des enfants.
+ * @property OMS - Organisation Mondiale de la Santé (WHO)
+ * @property NCHS - National Center for Health Statistics
+ * @property CDC - Centers for Disease Control and Prevention
+ */
+export enum GrowthStandard {
+   OMS = "oms",
+   NCHS = "nchs",
+   CDC = "cdc",
+}
+
 export enum StandardShape {
    TABLE = "growth_table",
    CURVE = "growth_curve",
@@ -328,3 +341,9 @@ export const BIOCHEMICAL_REF_CODES = {
    BIOCHEMICAL_FAT_HDL: "biochemical_fat_hdl",
    BIOCHEMICAL_FAT_TG: "bichemical_fat_triglycerides",
 } as const;
+
+export enum BiochemicalRangeStatus {
+   UNDER = "under",
+   NORMAL = "normal",
+   OVER = "over",
+}

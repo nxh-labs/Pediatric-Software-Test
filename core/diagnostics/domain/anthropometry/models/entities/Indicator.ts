@@ -54,7 +54,7 @@ export interface CreateIndicatorProps {
    axeY: IFormula;
    availableRefCharts: CreateAvailableChart[];
    availableRefTables: CreateAvailableTableProps[];
-   usageConditions: ICondition;
+   usageCondition: ICondition;
    interpretations: CreateIndicatorInterpreter[];
    zScoreComputingStrategy: ZScoreComputingStrategyType;
    standardShape: StandardShape;
@@ -158,7 +158,7 @@ export class Indicator extends Entity<IIndicator> {
          const availableRefTablesRes = createIndicatorProps.availableRefTables.map(AvailableTable.create);
          const axeXFormulaRes = Formula.create(createIndicatorProps.axeX);
          const axeYFormulaRes = Formula.create(createIndicatorProps.axeY);
-         const conditionRes = Condition.create(createIndicatorProps.usageConditions);
+         const conditionRes = Condition.create(createIndicatorProps.usageCondition);
          const interpretationsRes = createIndicatorProps.interpretations.map(IndicatorInterpreter.create);
          const combineRes = Result.combine([
             codeRes,

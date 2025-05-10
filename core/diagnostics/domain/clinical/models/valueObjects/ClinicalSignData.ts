@@ -6,7 +6,9 @@ export interface IClinicalSignData {
    code: SystemCode;
    question: string;
    dataType: ClinicalDataType;
+   required: boolean;
    dataRange?: [number, number];
+   enumValue?: string[];
 }
 
 export interface CreateClinicalSignData {
@@ -14,7 +16,9 @@ export interface CreateClinicalSignData {
    code: string;
    question: string;
    dataType: ClinicalDataType;
+   required: boolean;
    dataRange?: [number, number];
+   enumValue?: string[];
 }
 
 export class ClinicalSignData extends ValueObject<IClinicalSignData> {
@@ -38,6 +42,8 @@ export class ClinicalSignData extends ValueObject<IClinicalSignData> {
                question: createProps.question,
                dataType: createProps.dataType,
                dataRange: createProps.dataRange,
+               required: createProps.required,
+               enumValue: createProps.enumValue,
             }),
          );
       } catch (e: unknown) {

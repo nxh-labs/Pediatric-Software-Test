@@ -12,7 +12,7 @@ export interface IGrowthReferenceChart extends EntityPropsBaseType {
 export interface CreateGrowthReferenceChartProps {
    code: string;
    name: string;
-   sex: "M" | "F";
+   sex: `${Sex}`;
    standard: GrowthStandard;
    data: IChartData[];
 }
