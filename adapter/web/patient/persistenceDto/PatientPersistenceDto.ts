@@ -1,6 +1,6 @@
+import { EntityPersistenceDto } from "../../common";
 
-export interface PatientPersistenceDto {
-   id: string;
+export interface PatientPersistenceDto extends EntityPersistenceDto {
    name: string;
    gender: "M" | "F" | "O";
    birthday: string;

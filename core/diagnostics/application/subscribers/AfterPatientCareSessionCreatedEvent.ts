@@ -1,8 +1,8 @@
 import { PatientCareSessionCreatedData, PatientCareSessionCreatedEvent } from "../../../nutrition_care";
-import { DomainEventMessage, EventHandler, UseCase, IEventBus } from "@shared";
+import { DomainEventMessage, EventHandler, UseCase, IEventBus, EventHandlerExecutionFailed, formatError } from "@shared";
 import { PerformPatientGlobalVariableRequest, PerformPatientGlobalVariableResponse } from "../useCases";
 import { PatientGlobalVariablesPerformedEvent } from "../events";
-import { bindEventHandler, ExceptionBase } from "domain-eventrix";
+import { bindEventHandler } from "domain-eventrix";
 
 @DomainEventMessage("After Patient Care Session Created, Start patient current State Computing.", true)
 export class AfterPatientCareSessionCreatedEvent extends EventHandler<PatientCareSessionCreatedData, PatientCareSessionCreatedEvent> {
@@ -30,11 +30,7 @@ export class AfterPatientCareSessionCreatedEvent extends EventHandler<PatientCar
       } else {
          // eslint-disable-next-line @typescript-eslint/no-explicit-any
          const error = (result.value as any).err;
-         throw new ExceptionBase(
-            "Erreur lors de l'exécution du performGlobalVariableUseCase",
-            undefined,
-            error,
-         );
+         throw new EventHandlerExecutionFailed(formatError(error, AfterPatientCareSessionCreatedEvent.name));
       }
    }
 }

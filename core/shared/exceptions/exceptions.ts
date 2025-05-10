@@ -12,6 +12,7 @@ import {
    ILLEGAL_DOMAIN_STATUS,
    ILLEGAL_DOMAIN_ACTION,
    EVENT_HANDLER_FAILED,
+   INFRA_MAP_FAILED,
 } from "./exception.code";
 import { ExceptionBase } from "./exception.base";
 
@@ -170,6 +171,14 @@ export class EventHandlerExecutionFailed extends ExceptionBase {
    readonly code: string = EVENT_HANDLER_FAILED;
    static readonly message = "The current event handler execution failed";
    constructor(msg = EventHandlerExecutionFailed.message) {
+      super(msg);
+   }
+}
+
+export class InfraMapToDomainError extends ExceptionBase {
+   readonly code: string = INFRA_MAP_FAILED;
+   static readonly message = "The infra mapper failed to convert persistence dto to domain model ";
+   constructor(msg = InfraMapToDomainError.message) {
       super(msg);
    }
 }
