@@ -6,3 +6,4 @@ export * from "./GrowthReferenceChartService";
 export * from "./GrowthReferenceTableService";
 export * from "./NutritionalDiagnosticService";
 export * from "./NutritionalRiskFactorService";
+export * from "./ValidatePatientMeasurementsService";
