@@ -45,6 +45,7 @@ export class PatientCurrentState extends Entity<IPatientCurrentState> {
    addComplication(code: string, value: number, date: DomainDate) {
       this.props.complicationData[code] = { code, value, date };
    }
+  
    getAnthroVariables(): Record<string, number> {
       return Object.fromEntries(Object.values(this.props.anthropometricData).map((value) => [value.code, value.value]));
    }
