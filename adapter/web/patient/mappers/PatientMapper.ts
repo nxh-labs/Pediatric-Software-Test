@@ -13,7 +13,7 @@ import {
 } from "@core/shared";
 import { PatientPersistenceDto } from "../persistenceDto";
 
-export class PatientMapper implements InfrastructureMapper<Patient, PatientPersistenceDto> {
+export class PatientInfraMapper implements InfrastructureMapper<Patient, PatientPersistenceDto> {
    toPersistence(entity: Patient): PatientPersistenceDto {
       return {
          id: entity.id as string,
@@ -38,7 +38,7 @@ export class PatientMapper implements InfrastructureMapper<Patient, PatientPersi
       const birthdayRes = Birthday.create(record.birthday);
       const registrationDateRes = DomainDate.create(record.registrationDate);
       const combinedRes = Result.combine([contactRes, addressRes, genderRes, birthdayRes, registrationDateRes, fullnameRes, motherRes, fatherRes]);
-      if (combinedRes.isFailure) throw new InfraMapToDomainError(formatError(combinedRes, PatientMapper.name));
+      if (combinedRes.isFailure) throw new InfraMapToDomainError(formatError(combinedRes, PatientInfraMapper.name));
       return new Patient({
          id: record.id,
          createdAt: record.createdAt,

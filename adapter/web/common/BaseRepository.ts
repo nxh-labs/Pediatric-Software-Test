@@ -1,53 +1,31 @@
-export class BaseRepository<T> {
-    private db: IDBDatabase;
-    private storeName: string;
+import { AggregateID } from '@shared';
+import { IndexedDBConnection } from './IndexedDBConnection';
+import { InfrastructureMapper } from './InfrastructureMapper';
 
-    constructor(db: IDBDatabase, storeName: string) {
-        this.db = db;
-        this.storeName = storeName;
+export abstract class BaseRepository<DomainEntity, PersistenceModel>{
+    protected abstract storeName: string;
+
+    constructor(
+        protected readonly dbConnection: IndexedDBConnection,
+        protected readonly mapper: InfrastructureMapper<DomainEntity, PersistenceModel>
+    ) {}
+
+    protected async getObjectStore(mode: IDBTransactionMode = 'readonly'): Promise<IDBObjectStore> {
+        const db = await this.dbConnection.open();
+        const transaction = db.transaction(this.storeName, mode);
+        return transaction.objectStore(this.storeName);
     }
 
-    create(item: T): Promise<IDBRequest> {
-        return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction(this.storeName, 'readwrite');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.add(item);
-
-            request.onsuccess = () => resolve(request);
-            request.onerror = () => reject(request.error);
-        });
+    protected async save(entity: DomainEntity): Promise<void> {
+        const store = await this.getObjectStore('readwrite');
+        const data = this.mapper.toPersistence(entity);
+        await store.put(data);
     }
 
-    read(key: IDBValidKey): Promise<T> {
-        return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction(this.storeName, 'readonly');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.get(key);
-
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    update(item: T): Promise<IDBRequest> {
-        return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction(this.storeName, 'readwrite');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.put(item);
-
-            request.onsuccess = () => resolve(request);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    delete(key: IDBValidKey): Promise<IDBRequest> {
-        return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction(this.storeName, 'readwrite');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.delete(key);
-
-            request.onsuccess = () => resolve(request);
-            request.onerror = () => reject(request.error);
-        });
+    protected async findById(id: AggregateID): Promise<DomainEntity | null> {
+        const store = await this.getObjectStore();
+        const result = await store.get(id.toString());
+        if (!result) return null;
+        return this.mapper.toDomain(result as PersistenceModel);
     }
 }
