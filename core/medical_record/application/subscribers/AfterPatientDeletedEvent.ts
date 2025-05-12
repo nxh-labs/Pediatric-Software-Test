@@ -4,7 +4,7 @@ import { PatientDeletedData, PatientDeletedEvent } from "../../../patient";
 import { DeleteMedicalRecordRequest, DeleteMedicalRecordResponse } from "../useCases";
 
 @DomainEventMessage("After Patient Deleted, On MedicalRecord Bc, Delete associated Medical Record", true)
-export class AfterPatientDeletedEventOnMonitoring extends EventHandler<PatientDeletedData, PatientDeletedEvent> {
+export class AfterPatientDeletedMedicalRecordHandler extends EventHandler<PatientDeletedData, PatientDeletedEvent> {
    constructor(private readonly deleteUseCase: UseCase<DeleteMedicalRecordRequest, DeleteMedicalRecordResponse>, priority?: number) {
       super(priority);
    }
@@ -16,4 +16,4 @@ export class AfterPatientDeletedEventOnMonitoring extends EventHandler<PatientDe
          if (deleteMedicalRecordRes.isLeft()) throw new EventHandlerExecutionFailed(JSON.stringify((deleteMedicalRecordRes.value as any)?.err));
        }
 }
-bindEventHandler(AfterPatientDeletedEventOnMonitoring, PatientDeletedEvent);
+bindEventHandler(AfterPatientDeletedMedicalRecordHandler, PatientDeletedEvent);

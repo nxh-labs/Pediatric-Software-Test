@@ -395,8 +395,8 @@ export class DiagnosticContext {
       this.idGenerator = new GenerateUUID();
       this.eventBus = eventBus;
 
-      this.unitAcl = new UnitACLImpl(UnitContext.init(dbConnection).getService());
-      this.patientAcl = new PatientACLImpl(PatientContext.init(dbConnection).getService());
+      this.unitAcl = new UnitACLImpl(UnitContext.init(dbConnection,this.eventBus).getService());
+      this.patientAcl = new PatientACLImpl(PatientContext.init(dbConnection,this.eventBus).getService());
       // Initialiser les mappers d'infrastructure
       this.patientDiagnosticDataInfraMapper = new PatientDiagnosticDataInfraMapper();
       this.nutritionalAssessmentResultInfraMapper = new NutritionalAssessmentResultInfraMapper();

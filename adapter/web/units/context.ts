@@ -3,10 +3,12 @@ import { UnitRepositoryImpl } from "./repository.web/UnitRepository";
 import { UnitInfraMapper } from "./mappers/UnitMapper";
 import { GenerateUUID, IndexedDBConnection } from "../common";
 import { UnitConverterService } from "@core/units/domain/services/UnitConverterService";
+import { IEventBus } from "@shared";
 
 export class UnitContext {
    private static instance: UnitContext | null = null;
    private readonly dbConnection: IndexedDBConnection;
+   private readonly eventBus : IEventBus 
    private readonly infraMapper: UnitInfraMapper;
    private readonly repository: UnitRepositoryImpl;
    private readonly applicationMapper: UnitMapper;
@@ -22,11 +24,12 @@ export class UnitContext {
    // Service
    private readonly service: UnitService;
 
-  private  constructor(dbConnection: IndexedDBConnection) {
+  private  constructor(dbConnection: IndexedDBConnection,eventBus: IEventBus) {
       // Infrastructure
       this.dbConnection = dbConnection;
+      this.eventBus = eventBus
       this.infraMapper = new UnitInfraMapper();
-      this.repository = new UnitRepositoryImpl(this.dbConnection, this.infraMapper);
+      this.repository = new UnitRepositoryImpl(this.dbConnection, this.infraMapper,this.eventBus);
 
       // Application
       this.applicationMapper = new UnitMapper();
@@ -48,9 +51,9 @@ export class UnitContext {
          convertUC: this.convertUseCase,
       });
    }
-   static init(dbConnection: IndexedDBConnection) {
+   static init(dbConnection: IndexedDBConnection,eventBus: IEventBus) {
       if (!UnitContext.instance) {
-         this.instance = new UnitContext(dbConnection);
+         this.instance = new UnitContext(dbConnection,eventBus);
       }
       return this.instance as UnitContext;
    }

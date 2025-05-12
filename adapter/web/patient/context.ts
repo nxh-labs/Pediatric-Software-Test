@@ -2,10 +2,12 @@ import { PatientService, PatientMapper, CreatePatientUseCase, GetPatientUseCase,
 import { PatientRepositoryImpl } from "./repository.web/PatientRepository";
 import { PatientInfraMapper } from "./mappers/PatientMapper";
 import { GenerateUUID, IndexedDBConnection } from "../common";
+import { IEventBus } from "@shared";
 
 export class PatientContext {
    private static instance: PatientContext | null = null;
    private readonly dbConnection: IndexedDBConnection;
+   private readonly eventBus: IEventBus;
    private readonly infraMapper: PatientInfraMapper;
    private readonly repository: PatientRepositoryImpl;
    private readonly applicationMapper: PatientMapper;
@@ -19,11 +21,12 @@ export class PatientContext {
    // Service
    private readonly patientService: PatientService;
 
-   private constructor(dbConnection: IndexedDBConnection) {
+   private constructor(dbConnection: IndexedDBConnection,eventBus: IEventBus) {
       // Infrastructure
       this.dbConnection = dbConnection;
+      this.eventBus =eventBus
       this.infraMapper = new PatientInfraMapper();
-      this.repository = new PatientRepositoryImpl(this.dbConnection, this.infraMapper);
+      this.repository = new PatientRepositoryImpl(this.dbConnection, this.infraMapper,this.eventBus);
 
       // Application
       this.applicationMapper = new PatientMapper();
@@ -41,13 +44,12 @@ export class PatientContext {
          updateUC: this.updateUseCase,
          deleteUC: this.deleteUseCase,
       });
-  
    }
-   static init(dbConnection: IndexedDBConnection) {
+   static init(dbConnection: IndexedDBConnection,eventBus: IEventBus) {
       if (!PatientContext.instance) {
-         this.instance = new PatientContext(dbConnection);
+         this.instance = new PatientContext(dbConnection,eventBus);
       }
-      return PatientContext.instance as PatientContext
+      return PatientContext.instance as PatientContext;
    }
    getService(): PatientService {
       return this.patientService;
