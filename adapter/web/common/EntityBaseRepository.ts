@@ -1,4 +1,4 @@
-import { AggregateID, Entity, EntityPropsBaseType, InfrastructureMapper, Repository } from "@shared";
+import { AggregateID, AggregateRoot, Entity, EntityPropsBaseType, InfrastructureMapper, IEventBus, Repository } from "@shared";
 import { IndexedDBConnection } from "./IndexedDBConnection";
 
 export abstract class EntityBaseRepository<DomainEntity extends Entity<EntityPropsBaseType>, PersistenceModel extends object>
@@ -9,6 +9,7 @@ export abstract class EntityBaseRepository<DomainEntity extends Entity<EntityPro
    constructor(
       protected readonly dbConnection: IndexedDBConnection,
       protected readonly mapper: InfrastructureMapper<DomainEntity, PersistenceModel>,
+      protected readonly eventBus: IEventBus | null = null,
    ) {}
    protected async getObjectStore(mode: IDBTransactionMode = "readonly"): Promise<IDBObjectStore> {
       const db = await this.dbConnection.open();
@@ -48,6 +49,13 @@ export abstract class EntityBaseRepository<DomainEntity extends Entity<EntityPro
          // eslint-disable-next-line @typescript-eslint/no-explicit-any
          const { id, ...otherProps } = data as any;
          await store.put(otherProps, id);
+         if (entity instanceof AggregateRoot) {
+            const domainEvents = entity.getDomainEvents();
+            if (this.eventBus) {
+               const eventPublishingPromises = domainEvents.map(this.eventBus.publishAndDispatchImmediate);
+               await Promise.all(eventPublishingPromises);
+            }
+         }
       } catch (error) {
          console.error(error);
       }
@@ -72,9 +80,7 @@ export abstract class EntityBaseRepository<DomainEntity extends Entity<EntityPro
                   resolve([]);
                   return;
                }
-               const entities = result.map((item: PersistenceModel) => 
-                  this.mapper.toDomain(item)
-               );
+               const entities = result.map((item: PersistenceModel) => this.mapper.toDomain(item));
                resolve(entities);
             };
 

@@ -5,7 +5,7 @@ export interface DiagnosticRuleDto {
    id: AggregateID;
    name: string;
    code: string;
-   condition: IDiagnosticCondition[];
+   conditions: IDiagnosticCondition[];
    createdAt: string;
    updatedAt: string;
 }

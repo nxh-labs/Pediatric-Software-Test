@@ -9,7 +9,7 @@ export class DeleteMedicalRecordUseCase implements UseCase<DeleteMedicalRecordRe
       try {
          const medicalRecord = await this.repo.getByPatientIdOrID(request.patientOrMedicalRecordId);
          medicalRecord.delete();
-         await this.repo.delete(medicalRecord.id);
+         await this.repo.remove(medicalRecord)
          return right(Result.ok(void 0));
       } catch (e: unknown) {
          return left(handleError(e));

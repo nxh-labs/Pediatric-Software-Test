@@ -5,7 +5,7 @@ import { PatientGlobalVariablesPerformedEvent } from "../events";
 import { bindEventHandler } from "domain-eventrix";
 
 @DomainEventMessage("After Patient Care Session Created, Start patient current State Computing.", true)
-export class AfterPatientCareSessionCreatedEvent extends EventHandler<PatientCareSessionCreatedData, PatientCareSessionCreatedEvent> {
+export class AfterPatientCareSessionCreatedHandler extends EventHandler<PatientCareSessionCreatedData, PatientCareSessionCreatedEvent> {
    constructor(
       private readonly performGlobalVariableUseCase: UseCase<PerformPatientGlobalVariableRequest, PerformPatientGlobalVariableResponse>,
       private readonly eventBus: IEventBus,
@@ -30,9 +30,9 @@ export class AfterPatientCareSessionCreatedEvent extends EventHandler<PatientCar
       } else {
          // eslint-disable-next-line @typescript-eslint/no-explicit-any
          const error = (result.value as any).err;
-         throw new EventHandlerExecutionFailed(formatError(error, AfterPatientCareSessionCreatedEvent.name));
+         throw new EventHandlerExecutionFailed(formatError(error, AfterPatientCareSessionCreatedHandler.name));
       }
    }
 }
 
-bindEventHandler(AfterPatientCareSessionCreatedEvent, PatientCareSessionCreatedEvent);
+bindEventHandler(AfterPatientCareSessionCreatedHandler, PatientCareSessionCreatedEvent);

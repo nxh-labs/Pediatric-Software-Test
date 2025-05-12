@@ -8,3 +8,4 @@ export * from "./NutritionalDiagnosticService";
 export * from "./NutritionalRiskFactorService";
 export * from "./ValidatePatientMeasurementsService";
 export * from "./interfaces";
+export * from "./DiagnosticRuleService";

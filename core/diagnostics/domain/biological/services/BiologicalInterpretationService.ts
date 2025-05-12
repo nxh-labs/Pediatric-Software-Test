@@ -1,11 +1,12 @@
 import { ConditionResult, evaluateCondition, formatError, handleError, Result } from "@shared";
 import { EvaluationContext } from "../../common";
 import { BiologicalTestResult, BiologicalAnalysisInterpretation, BiochemicalReference, BiochemicalRange, BiochemicalRangeStatus } from "../models";
-import { BiochemicalReferenceRepository, BiologicalUnitACL, IBiologicalInterpretationService } from "../ports";
+import { BiochemicalReferenceRepository, IBiologicalInterpretationService } from "../ports";
 import { BIOLOGICAL_SERVICE_ERRORS, handleBiologicalError } from "../errors";
+import { UnitAcl } from "../../anthropometry";
 
 export class BiologicalInterpretationService implements IBiologicalInterpretationService {
-   constructor(private readonly biochemicalRefRepo: BiochemicalReferenceRepository, private readonly biologicalUnitConvertor: BiologicalUnitACL) {}
+   constructor(private readonly biochemicalRefRepo: BiochemicalReferenceRepository, private readonly biologicalUnitConvertor: UnitAcl) {}
    async interpret(data: BiologicalTestResult[], context: EvaluationContext): Promise<Result<BiologicalAnalysisInterpretation[]>> {
       try {
          const referencesResult = await this.getBiochemicalReference(data);
@@ -118,12 +119,12 @@ export class BiologicalInterpretationService implements IBiologicalInterpretatio
       const biochemicalRefUnit = reference.getProps().unit;
       if (biologicalTestResultUnit.equals(biochemicalRefUnit)) return biologicalTestResult;
       else {
-         const convertedValue = await this.biologicalUnitConvertor.convertTo(
+         const convertedValueRes = await this.biologicalUnitConvertor.convertTo(
             biologicalTestResultUnit,
             biochemicalRefUnit,
             biologicalTestResult.unpack().value,
          );
-         return new BiologicalTestResult({ value: convertedValue, unit: biochemicalRefUnit, code: biologicalTestResult.unpack().code });
+         return new BiologicalTestResult({ value: convertedValueRes.val, unit: biochemicalRefUnit, code: biologicalTestResult.unpack().code });
       }
    }
 }

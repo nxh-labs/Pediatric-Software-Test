@@ -13,7 +13,7 @@ export class DeleteNutritionalDiagnosticUseCase implements UseCase<DeleteNutriti
       try {
          const nutritionalDiagnostic = await this.nutritionalDiagnosticRepo.getById(request.nutritionalDiagnosticId);
          nutritionalDiagnostic.delete();
-         await this.nutritionalDiagnosticRepo.delete(request.nutritionalDiagnosticId);
+         await this.nutritionalDiagnosticRepo.remove(nutritionalDiagnostic);
          return right(Result.ok(this.mapper.toResponse(nutritionalDiagnostic)));
       } catch (e: unknown) {
          return left(handleError(e));

@@ -3,7 +3,7 @@ import { formatError, InfraMapToDomainError, InfrastructureMapper, Result } from
 import { AnthropometricData, BiologicalValue, ClinicalSignData, ComplicationData } from "@core/medical_record/domain";
 import { MedicalRecordPersistenceDto } from "./../persistenceDto";
 
-export class MedicalRecordMapper implements InfrastructureMapper<MedicalRecord, MedicalRecordPersistenceDto> {
+export class MedicalRecordInfraMapper implements InfrastructureMapper<MedicalRecord, MedicalRecordPersistenceDto> {
    toPersistence(entity: MedicalRecord): MedicalRecordPersistenceDto {
       return {
          id: entity.id as string,
@@ -69,7 +69,7 @@ export class MedicalRecordMapper implements InfrastructureMapper<MedicalRecord, 
       ]);
 
       if (combinedRes.isFailure) {
-         throw new InfraMapToDomainError(formatError(combinedRes, MedicalRecordMapper.name));
+         throw new InfraMapToDomainError(formatError(combinedRes, MedicalRecordInfraMapper.name));
       }
 
       return new MedicalRecord({

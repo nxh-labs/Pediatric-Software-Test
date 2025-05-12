@@ -2,15 +2,15 @@ import { handleError, Result } from "@shared";
 import { EvaluationContext, ValidateResult } from "../../common";
 import { PatientDiagnosticData } from "../models";
 import { IPatientDataValidationService } from "../ports";
-import { ClinicalValidationService } from "../../clinical";
-import { BiologicalValidationService } from "../../biological";
+import { IClinicalValidationService } from "../../clinical";
+import { IBiologicalValidationService } from "../../biological";
 import { IAnthropometricValidationService } from "../../anthropometry";
 
 export class PatientDataValidationService implements IPatientDataValidationService {
    constructor(
       private readonly anthropValidationService: IAnthropometricValidationService,
-      private readonly clinicalValidationService: ClinicalValidationService,
-      private readonly biologicalValidationService: BiologicalValidationService,
+      private readonly clinicalValidationService: IClinicalValidationService,
+      private readonly biologicalValidationService: IBiologicalValidationService,
    ) {}
    async validate(patientData: PatientDiagnosticData): Promise<Result<ValidateResult>> {
       try {

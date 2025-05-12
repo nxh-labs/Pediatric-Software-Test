@@ -1,7 +1,7 @@
 
 import { EntityBaseRepository } from "../../../common";
 
-import { AggregateID } from "@shared";
+import { AggregateID, AggregateRoot } from "@shared";
 import { PatientCareSessionPersistenceDto } from "../../mappers";
 import { PatientCareSession, PatientCareSessionRepository } from "@core/nutrition_care";
 
@@ -53,4 +53,23 @@ export class PatientCareSessionRepositoryImpl
             throw new Error(`Failed to get PatientCareSession: ${error}`);
         }
     }
+     async remove(patientCareSession: PatientCareSession): Promise<void> {
+          try {
+             if (!patientCareSession.id) {
+                throw new Error("Cannot remove patient Care session without id");
+             }
+    
+             await this.delete(patientCareSession.id as AggregateID);
+             if (patientCareSession instanceof AggregateRoot) {
+                const domainEvents = patientCareSession.getDomainEvents();
+                if (this.eventBus) {
+                   const eventPublishingPromises = domainEvents.map(this.eventBus.publishAndDispatchImmediate);
+                   await Promise.all(eventPublishingPromises);
+                }
+             }
+          } catch (error) {
+             console.error(error);
+             throw new Error(`Failed to remove patient care session: ${error}`);
+          }
+       }
 }

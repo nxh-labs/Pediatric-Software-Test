@@ -7,3 +7,5 @@ export * from "./IndicatorMapper";
 export * from "./NutritionalAssessmentResultMapper";
 export * from "./NutritionalDiagnosticMapper";
 export * from "./PatientDiagnosticDataMapper";
+export * from "./DiagnosticRuleMapper";
+export * from "./NutritionalRiskFactorMapper";
