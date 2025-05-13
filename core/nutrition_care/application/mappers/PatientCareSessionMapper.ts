@@ -1,15 +1,12 @@
 import { ApplicationMapper } from "@shared";
-import { PatientCareSession } from "../../domain";
-import { PatientCareSessionDto } from "../dtos";
-import { CarePhaseMapper } from "./CarePhaseMapper";
-import { PatientCurrentStateMapper } from "./PatientCurrentStateMapper";
-import { DailyCareJournalMapper } from "./DailyCareJournalMapper";
+import { CarePhase, DailyCareJournal, PatientCareSession, PatientCurrentState } from "../../domain";
+import { CarePhaseDto, DailyCareJournalDto, PatientCareSessionDto, PatientCurrentStateDto } from "../dtos";
 
 export class PatientCareSessionMapper implements ApplicationMapper<PatientCareSession, PatientCareSessionDto> {
    constructor(
-      private carePhaseMapper: CarePhaseMapper,
-      private currentState: PatientCurrentStateMapper,
-      private dailyJournal: DailyCareJournalMapper,
+      private carePhaseMapper: ApplicationMapper<CarePhase, CarePhaseDto>,
+      private currentState: ApplicationMapper<PatientCurrentState, PatientCurrentStateDto>,
+      private dailyJournal: ApplicationMapper<DailyCareJournal, DailyCareJournalDto>,
    ) {}
    toResponse(entity: PatientCareSession): PatientCareSessionDto {
       const { carePhases, orientation, currentState, dailyJournals, currentDailyJournal, status } = entity.getProps();

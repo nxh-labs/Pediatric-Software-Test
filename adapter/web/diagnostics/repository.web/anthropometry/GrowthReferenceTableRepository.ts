@@ -7,7 +7,7 @@ export class GrowthReferenceTableRepositoryImpl
     extends EntityBaseRepository<GrowthReferenceTable, GrowthReferenceTablePersistenceDto> 
     implements GrowthReferenceTableRepository {
     
-    protected storeName = "growth_reference_charts";
+    protected storeName = "growth_reference_tables";
 
     async getByCode(code: SystemCode): Promise<GrowthReferenceTable> {
         try {
