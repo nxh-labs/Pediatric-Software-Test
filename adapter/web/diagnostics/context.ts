@@ -584,7 +584,7 @@ export class DiagnosticContext {
       this.validateMeasurementDataUC = new ValidateMeasurementsUseCase(this.nutritionalDiagnosticRepo, this.patientDataValidationService);
       // Subscribers
       this.afterPatientCareSessionCreated = new AfterPatientCareSessionCreatedHandler(this.performGlobalVariableUC, this.eventBus);
-      this.eventBus.suscriber(this.afterPatientCareSessionCreated)
+      this.eventBus.subscribe(this.afterPatientCareSessionCreated)
       // Application Services
       this.anthroMeasureAppService = new AnthropometricMeasureService({
          createUC: this.createMeasureUC,
@@ -701,7 +701,7 @@ export class DiagnosticContext {
 
    // Méthode de nettoyage des ressources si nécessaire
    dispose(): void {
-     // this.eventBus.unsubscribe(this.afterPatientCareSessionCreated);
+     this.eventBus.unsubscribe(this.afterPatientCareSessionCreated);
       DiagnosticContext.instance = null;
    }
 

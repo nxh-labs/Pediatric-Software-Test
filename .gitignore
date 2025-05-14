@@ -26,4 +26,4 @@ dist-ssr
 # React Component Preview
 /previewConfig.json
 # 
-yarn.lock
+/yarn.lock

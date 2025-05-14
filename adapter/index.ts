@@ -1,2 +1,2 @@
-// filepath: /adapter/adapter/index.ts
-export * from './web';
+export * from "./web";
+export * from "./react";

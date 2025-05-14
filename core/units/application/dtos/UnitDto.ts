@@ -1,5 +1,5 @@
 import { AggregateID } from "@shared";
-import { UnitType } from "../../domain";
+import { UnitType } from "./../../domain";
 
 export interface UnitDto {
    id: AggregateID;

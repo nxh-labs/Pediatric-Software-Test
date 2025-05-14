@@ -10,14 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.27.1",
     "@react-spring/web": "^9.7.5",
     "@tailwindcss/vite": "^4.0.13",
-    "domain-eventrix": "^1.0.9",
+    "domain-eventrix": "^1.0.11",
     "jszip": "^3.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-gifted-charts": "^0.0.12",
     "recharts": "^2.15.1",
+    "reflect-metadata": "^0.2.2",
     "smartcal": "^1.0.8",
     "tailwindcss": "^4.0.13",
     "xlsx": "^0.18.5"

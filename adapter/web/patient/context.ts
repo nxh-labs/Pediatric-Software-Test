@@ -21,12 +21,12 @@ export class PatientContext {
    // Service
    private readonly patientService: PatientService;
 
-   private constructor(dbConnection: IndexedDBConnection,eventBus: IEventBus) {
+   private constructor(dbConnection: IndexedDBConnection, eventBus: IEventBus) {
       // Infrastructure
       this.dbConnection = dbConnection;
-      this.eventBus =eventBus
+      this.eventBus = eventBus;
       this.infraMapper = new PatientInfraMapper();
-      this.repository = new PatientRepositoryImpl(this.dbConnection, this.infraMapper,this.eventBus);
+      this.repository = new PatientRepositoryImpl(this.dbConnection, this.infraMapper, this.eventBus);
 
       // Application
       this.applicationMapper = new PatientMapper();
@@ -45,13 +45,16 @@ export class PatientContext {
          deleteUC: this.deleteUseCase,
       });
    }
-   static init(dbConnection: IndexedDBConnection,eventBus: IEventBus) {
+   static init(dbConnection: IndexedDBConnection, eventBus: IEventBus) {
       if (!PatientContext.instance) {
-         this.instance = new PatientContext(dbConnection,eventBus);
+         this.instance = new PatientContext(dbConnection, eventBus);
       }
       return PatientContext.instance as PatientContext;
    }
    getService(): PatientService {
       return this.patientService;
+   }
+   dispose(): void {
+      PatientContext.instance = null;
    }
 }

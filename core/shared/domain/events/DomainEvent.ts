@@ -3,5 +3,6 @@ export { DomainEvent, DomainEventMessage, bindEventHandler, EventHandler } from 
 export interface IEventBus {
    publish<Data extends EventData, T extends DomainEvent<Data>>(event: T): void;
    publishAndDispatchImmediate<Data extends EventData, T extends DomainEvent<Data>>(event: T): Promise<void>;
-  suscriber<DataType extends EventData, T extends IDomainEvent<DataType>>(handler: EventHandler<DataType, T>): void;
+   subscribe<DataType extends EventData, T extends IDomainEvent<DataType>>(handler: EventHandler<DataType, T>): void;
+   unsubscribe<DataType extends EventData, T extends IDomainEvent<DataType>>(handler: EventHandler<DataType, T>): void;
 }

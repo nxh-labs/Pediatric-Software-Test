@@ -363,7 +363,7 @@ export class NutritionCareContext {
 
       // Subscribers
       this.afterPatientGlobalPerformedHandler = new AfterPatientGlobalVariablePerformedEvent(this.addDataUC, this.makeCareSessionReadyUC);
-      this.eventBus.suscriber(this.afterPatientGlobalPerformedHandler);
+      this.eventBus.subscribe(this.afterPatientGlobalPerformedHandler);
    }
 
    static init(dbConnection: IndexedDBConnection, eventBus: IEventBus) {
@@ -397,7 +397,7 @@ export class NutritionCareContext {
 
    // Méthode existante de nettoyage
    dispose(): void {
-      // this.eventBus.unsubscribe(this.afterPatientGlobalPerformedHandler);
+   this.eventBus.unsubscribe(this.afterPatientGlobalPerformedHandler);
       NutritionCareContext.instance = null;
    }
 }

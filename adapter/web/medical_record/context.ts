@@ -73,7 +73,7 @@ export class MedicalRecordContext {
       );
 
       this.infraMapper = new MedicalRecordInfraMapper();
-      this.repository = new MedicalRecordRepositoryImpl(this.dbConnection, this.infraMapper,this.eventBus);
+      this.repository = new MedicalRecordRepositoryImpl(this.dbConnection, this.infraMapper, this.eventBus);
       this.idGenerator = new GenerateUUID();
 
       // Application
@@ -86,8 +86,8 @@ export class MedicalRecordContext {
       // Subscribers
       this.afterPatientCreatedHandler = new AfterPatientCreatedMedicalHandler(this.createMedicalRecordUC);
       this.afterPatientDeletedHandler = new AfterPatientDeletedMedicalRecordHandler(this.deleteMedicalRecordUC);
-      this.eventBus.suscriber(this.afterPatientCreatedHandler);
-      this.eventBus.suscriber(this.afterPatientDeletedHandler);
+      this.eventBus.subscribe(this.afterPatientCreatedHandler);
+      this.eventBus.subscribe(this.afterPatientDeletedHandler);
       this.medicalRecordAppService = new MedicalRecordService({
          addDataUC: this.addDataToMedicalRecordUC,
          createUC: this.createMedicalRecordUC,
@@ -104,5 +104,10 @@ export class MedicalRecordContext {
    }
    getMedicalRecordService(): IMedicalRecordService {
       return this.medicalRecordAppService;
+   }
+   dispose(): void {
+      this.eventBus.unsubscribe(this.afterPatientCreatedHandler);
+      this.eventBus.unsubscribe(this.afterPatientDeletedHandler);
+      MedicalRecordContext.instance = null;
    }
 }

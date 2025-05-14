@@ -143,6 +143,9 @@ export enum GrowthIndicatorRange {
    BELOW_M3 = "below -3",
    BELOW_M4 = "below -4",
 }
+/**
+ * @note This is sex enum for data treatment not for the domain
+ */
 export enum Sex {
    MALE = "'M'",
    FEMALE = "'F'",
