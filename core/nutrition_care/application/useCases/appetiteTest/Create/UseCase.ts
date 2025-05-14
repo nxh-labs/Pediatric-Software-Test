@@ -9,6 +9,8 @@ export class CreateAppetiteTestUseCase implements UseCase<CreateAppetiteTestRequ
       try {
          const appetiteTestRes = AppetiteTestRef.create({ ...request.data, otherData: { fields: [] } }, this.idGenerator.generate().toValue());
          if (appetiteTestRes.isFailure) return left(appetiteTestRes);
+         const exist = await this.repo.exist(appetiteTestRes.val.getProps().code);
+         if (exist) return left(Result.fail(`The appetite test reference with this code [${appetiteTestRes.val.getCode()}] already exist.`));
          appetiteTestRes.val.created();
          await this.repo.save(appetiteTestRes.val);
          return right(Result.ok({ id: appetiteTestRes.val.id }));

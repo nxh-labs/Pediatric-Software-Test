@@ -1,0 +1,120 @@
+.init-container {
+   max-width: 800px;
+   margin: 2rem auto;
+   padding: 2rem;
+   background-color: white;
+   border-radius: 12px;
+   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.init-title {
+   text-align: center;
+   color: #2c3e50;
+   margin-bottom: 2rem;
+}
+
+.progress-container {
+   margin: 2rem 0;
+}
+
+.progress-bar {
+   height: 8px;
+   background-color: #f0f0f0;
+   border-radius: 4px;
+   overflow: hidden;
+}
+
+.progress-fill {
+   height: 100%;
+   background-color: #3498db;
+   transition: width 0.3s ease;
+}
+
+.progress-text {
+   text-align: center;
+   margin-top: 0.5rem;
+   color: #666;
+}
+
+.status-container {
+   text-align: center;
+   margin: 1rem 0;
+}
+
+.current-stage {
+   font-weight: bold;
+   color: #2c3e50;
+   margin: 0;
+}
+
+.status-message {
+   color: #666;
+   margin: 0.5rem 0;
+}
+
+.error-container {
+   background-color: #fee;
+   border-left: 4px solid #e74c3c;
+   padding: 1rem;
+   margin: 1rem 0;
+}
+
+.error-message {
+   color: #c0392b;
+   margin: 0;
+}
+
+.stages-container {
+   margin: 2rem 0;
+   max-height: 300px;
+   overflow-y: auto;
+}
+
+.stage-item {
+   display: flex;
+   align-items: center;
+   padding: 0.5rem;
+   margin: 0.25rem 0;
+   border-radius: 4px;
+   transition: background-color 0.3s ease;
+}
+
+.stage-item.active {
+   background-color: #f8f9fa;
+}
+
+.stage-bullet {
+   width: 24px;
+   height: 24px;
+   border-radius: 50%;
+   background-color: #3498db;
+   color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-right: 1rem;
+}
+
+.stage-text {
+   color: #2c3e50;
+}
+
+.complete-message {
+   text-align: center;
+   margin-top: 2rem;
+   padding: 1rem;
+   background-color: #e8f5e9;
+   border-radius: 8px;
+}
+
+.complete-icon {
+   display: inline-block;
+   width: 40px;
+   height: 40px;
+   background-color: #4caf50;
+   color: white;
+   border-radius: 50%;
+   line-height: 40px;
+   font-size: 1.5rem;
+   margin-bottom: 1rem;
+}

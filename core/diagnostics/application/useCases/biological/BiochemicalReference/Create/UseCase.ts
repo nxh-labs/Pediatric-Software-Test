@@ -10,6 +10,9 @@ export class CreateBiochemicalReferenceUseCase implements UseCase<CreateBiochemi
          const biochemicalRefId = this.idGenerator.generate().toValue();
          const biochemicalRefRes = BiochemicalReference.create(request.data, biochemicalRefId);
          if (biochemicalRefRes.isFailure) return left(biochemicalRefRes);
+         const exist = await this.repo.exist(biochemicalRefRes.val.getProps().code);
+         if (exist) return left(Result.fail(`The biochemical reference  with this code [${biochemicalRefRes.val.getCode()}] already exist.`));
+
          biochemicalRefRes.val.created();
          await this.repo.save(biochemicalRefRes.val);
          return right(Result.ok({ id: biochemicalRefId }));

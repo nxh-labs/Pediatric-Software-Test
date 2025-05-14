@@ -54,7 +54,7 @@ export interface CreateIndicatorProps {
    axeY: IFormula;
    availableRefCharts: CreateAvailableChart[];
    availableRefTables: CreateAvailableTableProps[];
-   usageCondition: ICondition;
+   usageConditions: ICondition;
    interpretations: CreateIndicatorInterpreter[];
    zScoreComputingStrategy: ZScoreComputingStrategyType;
    standardShape: StandardShape;
@@ -152,13 +152,14 @@ export class Indicator extends Entity<IIndicator> {
    // }
    static create(createIndicatorProps: CreateIndicatorProps, id: AggregateID): Result<Indicator> {
       try {
+         
          const codeRes = SystemCode.create(createIndicatorProps.code);
          const neededMeasureCodesRes = createIndicatorProps.neededMeasureCodes.map(SystemCode.create);
          const availableRefChartsRes = createIndicatorProps.availableRefCharts.map(AvailableChart.create);
          const availableRefTablesRes = createIndicatorProps.availableRefTables.map(AvailableTable.create);
          const axeXFormulaRes = Formula.create(createIndicatorProps.axeX);
          const axeYFormulaRes = Formula.create(createIndicatorProps.axeY);
-         const conditionRes = Condition.create(createIndicatorProps.usageCondition);
+         const conditionRes = Condition.create(createIndicatorProps.usageConditions);
          const interpretationsRes = createIndicatorProps.interpretations.map(IndicatorInterpreter.create);
          const combineRes = Result.combine([
             codeRes,
@@ -170,6 +171,7 @@ export class Indicator extends Entity<IIndicator> {
             ...availableRefTablesRes,
             ...interpretationsRes,
          ]);
+        
          if (combineRes.isFailure) return Result.fail(String(combineRes.err));
          return Result.ok(
             new Indicator({

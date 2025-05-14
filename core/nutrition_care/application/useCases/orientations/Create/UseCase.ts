@@ -12,6 +12,9 @@ export class CreateOrientationRefUseCase implements UseCase<CreateOrientationRef
          if (orientationRefRes.isFailure) return left(orientationRefRes);
 
          const orientationRef = orientationRefRes.val;
+         const exist = await this.repo.exist(orientationRef.getProps().code);
+         if (exist) return left(Result.fail(`The orientationRef with this code [${orientationRef.getCode()}] already exist.`));
+
          orientationRef.created();
          await this.repo.save(orientationRef);
          return right(Result.ok({ id: newId }));

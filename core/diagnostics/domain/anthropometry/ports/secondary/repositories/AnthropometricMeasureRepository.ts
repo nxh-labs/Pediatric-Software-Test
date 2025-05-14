@@ -5,4 +5,5 @@ export interface AnthropometricMeasureRepository extends Repository<Anthropometr
    getByCode(code: SystemCode): Promise<AnthropometricMeasure>;
    getAll(): Promise<AnthropometricMeasure[]>;
    getAllCode(): Promise<SystemCode[]>;
+   exist(code: SystemCode) : Promise<boolean>
 }

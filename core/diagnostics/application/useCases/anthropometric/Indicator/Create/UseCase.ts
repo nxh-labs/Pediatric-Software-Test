@@ -10,6 +10,9 @@ export class CreateIndicatorUseCase implements UseCase<CreateIndicatorRequest, C
          const indicatorId = this.idGenerator.generate().toString();
          const indicator = Indicator.create(request.data, indicatorId);
          if (indicator.isFailure) return left(indicator);
+         const exist = await this.indicatorRepo.exist(indicator.val.getProps().code);
+         if (exist) return left(Result.fail(`The indicator with this code [${indicator.val.getCode()}] already exist.`));
+
          indicator.val.created();
          await this.indicatorRepo.save(indicator.val);
          return right(Result.ok({ id: indicatorId }));

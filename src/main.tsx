@@ -5,9 +5,9 @@ import App from "./App.tsx";
 import { EventProvider } from "domain-eventrix/react";
 
 createRoot(document.getElementById("root")!).render(
-   <StrictMode>
+   <>
       <EventProvider eventBusKey={"PediatricAppEventBus"}>
          <App />
       </EventProvider>
-   </StrictMode>,
+   </>
 );

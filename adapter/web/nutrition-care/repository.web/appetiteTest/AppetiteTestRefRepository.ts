@@ -36,4 +36,26 @@ export class AppetiteTestRefRepositoryImpl
             throw new Error(`Failed to get AppetiteTestRef by code: ${error}`);
         }
     }
+     async exist(code: SystemCode): Promise<boolean> {
+      try {
+         const store = await this.getObjectStore();
+         return new Promise((resolve, reject) => {
+            const request = store.index("code").count(code.unpack());
+
+            request.onsuccess = (event) => {
+               const count = (event.target as IDBRequest).result;
+               resolve(count > 0);
+            };
+
+            request.onerror = (event) => {
+               console.error("Error checking existence:", event);
+               reject(new Error("Failed to check appetite test existence"));
+            };
+         });
+      } catch (error) {
+         console.error(error);
+         throw new Error(`Failed to check appetite test existence: ${error}`);
+      }
+   }
+
 }

@@ -10,6 +10,9 @@ export class CreateGrowthReferenceTableUseCase implements UseCase<CreateGrowthRe
          const growthRefTableId = this.idGenerator.generate().toValue();
          const growthRefTableRes = GrowthReferenceTable.create(request.data, growthRefTableId);
          if (growthRefTableRes.isFailure) return left(growthRefTableRes);
+         const exist = await this.repo.exist(growthRefTableRes.val.getProps().code);
+         if (exist) return left(Result.fail(`The growth reference table with this code [${growthRefTableRes.val.getCode()}] already exist.`));
+
          growthRefTableRes.val.created();
          await this.repo.save(growthRefTableRes.val);
          return right(Result.ok({ id: growthRefTableId }));

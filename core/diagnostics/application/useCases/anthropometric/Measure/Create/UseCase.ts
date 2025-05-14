@@ -10,6 +10,9 @@ export class CreateAnthropometricMeasureUseCase implements UseCase<CreateAnthrop
          const measureId = this.idGenerator.generate().toString();
          const anthropometricMeasure = AnthropometricMeasure.create(request.data, measureId);
          if (anthropometricMeasure.isFailure) return left(anthropometricMeasure);
+         const exist = await this.anthropometricRepo.exist(anthropometricMeasure.val.getProps().code);
+         if (exist) return left(Result.fail(`The anthropometric measure with this code [${anthropometricMeasure.val.getCode()}] already exist.`));
+
          anthropometricMeasure.val.created();
          await this.anthropometricRepo.save(anthropometricMeasure.val);
          return right(Result.ok({ id: measureId }));

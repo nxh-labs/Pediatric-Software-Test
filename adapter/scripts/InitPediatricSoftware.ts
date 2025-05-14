@@ -28,6 +28,7 @@ import {
 import { IAppetiteTestAppService, IComplicationAppService, IMedicineAppService, IMilkAppService, IOrientationAppService } from "@core/nutrition_care";
 import { IUnitService } from "@core/units";
 import { Message, Sex } from "@shared";
+import { PediatricSoftwareDataZipFileArch } from "../constants/PediatricSofWareDataZipFileArch";
 export interface InitializationProgress {
    stage: string;
    completed: number;
@@ -130,15 +131,15 @@ export class PediatricSoftwareDataManager {
          await this.processStep("Growth Tables", () => this.addGrowthTable(data.growthReferenceTables));
          await this.processStep("Indicators", () => this.addIndicator(data.indicators));
          await this.processStep("Clinical Signs", () => this.addClinicalSignReference(data.clinicalSigns));
-         await this.processStep("Nutritional Risk Factors", () => this.addNutritionalRiskFactor(data.nutritionalRiskFactors));
          await this.processStep("Biochemical References", () => this.addBiochemicalReference(data.biochemicalReferences));
          await this.processStep("Diagnostic Rules", () => this.addDiagnosticRule(data.diagnosticRules));
          await this.processStep("Appetite Tests", () => this.addAppetiteTestRef(data.appetiteTestRefs));
          await this.processStep("Orientation References", () => this.addOrientationRef(data.orientationRefs));
+         await this.processStep("Complications", () => this.addComplication(data.complications));
+         await this.processStep("Milks", () => this.addMilk(data.milks));
          await this.processStep("Medicines", () => this.addMedicine(data.medicines));
          await this.processStep("Units", () => this.addUnit(data.units));
-         await this.processStep("Milks", () => this.addMilk(data.milks));
-         await this.processStep("Complications", () => this.addComplication(data.complications));
+         await this.processStep("Nutritional Risk Factors", () => this.addNutritionalRiskFactor(data.nutritionalRiskFactors));
 
          this.notifyComplete();
       } catch (error) {
@@ -152,6 +153,7 @@ export class PediatricSoftwareDataManager {
          this.notifyProgress(stageName, this.currentStep, this.totalSteps, `Processing ${stageName}...`);
          await process();
          this.currentStep++;
+         setTimeout(()=>{},1000)
          this.notifyProgress(stageName, this.currentStep, this.totalSteps, `${stageName} completed`);
       } catch (error) {
          this.notifyError(stageName, `Error processing ${stageName}: ${error}`);
@@ -420,5 +422,49 @@ export class PediatricSoftwareDataManager {
             }
          }),
       );
+   }
+   prepareData(data: Map<string, string>): PediatricSoftwareData {
+      return {
+         measures: this.jsonToObj(PediatricSoftwareDataZipFileArch.anthropometricMeasure.filePath, data),
+         appetiteTestRefs: this.jsonToObj(PediatricSoftwareDataZipFileArch.appetiteTestRef.filePath, data),
+         biochemicalReferences: this.jsonToObj(PediatricSoftwareDataZipFileArch.biochemicalRef.filePath, data),
+         clinicalSigns: this.jsonToObj(PediatricSoftwareDataZipFileArch.clinicalRef.filePath, data),
+         complications: this.jsonToObj(PediatricSoftwareDataZipFileArch.complications.filePath, data),
+         diagnosticRules: this.jsonToObj(PediatricSoftwareDataZipFileArch.diagnosticRules.filePath, data),
+         growthReferenceCharts: this.jsonToObj(PediatricSoftwareDataZipFileArch.charts.filePath, data),
+         growthReferenceTables: this.jsonToObj(PediatricSoftwareDataZipFileArch.tables.filePath, data),
+         indicators: this.jsonToObj(PediatricSoftwareDataZipFileArch.indicators.filePath, data),
+         medicines: this.jsonToObj(PediatricSoftwareDataZipFileArch.medicine.filePath, data),
+         milks: this.jsonToObj(PediatricSoftwareDataZipFileArch.milks.filePath, data),
+         orientationRefs: this.jsonToObj(PediatricSoftwareDataZipFileArch.orientationRef.filePath, data),
+         units: this.jsonToObj(PediatricSoftwareDataZipFileArch.units.filePath, data),
+         nutritionalRiskFactors: this.jsonToObj(PediatricSoftwareDataZipFileArch.nutritionalRiskFactors.filePath, data),
+      };
+   }
+   jsonToObj<T>(filePath: string[] | string, data: Map<string, string>): T[] {
+      const obj: T[] = [];
+      if (Array.isArray(filePath)) {
+         filePath.forEach((path) => {
+            const jsonData = data.get(path);
+            if (!jsonData) {
+               console.error("[Error] : undefined value", path);
+               return;
+            }
+            const jsonToObj = JSON.parse(jsonData);
+            obj.push(jsonToObj as T);
+         });
+      } else if (typeof filePath === "string") {
+         const jsonData = data.get(filePath);
+         if (!jsonData) {
+            console.error("[Error] : undefined value", filePath);
+            return obj;
+         }
+         const jsonToObj = JSON.parse(jsonData);
+         const array = Array.isArray(jsonToObj) ? jsonToObj : [jsonToObj];
+         obj.push(...array);
+      } else {
+         console.error("Errors ");
+      }
+      return obj;
    }
 }

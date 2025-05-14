@@ -13,7 +13,7 @@ export abstract class ExceptionBase extends Error {
       readonly metadata?: unknown,
    ) {
       super(message);
-      Error.captureStackTrace(this, this.constructor);
+     //  Error?.captureStackTrace(this, this.constructor);
    }
 
    toSerialized(): SerializedException {

@@ -6,4 +6,6 @@ export interface ClinicalSignDataDto {
    question: string;
    dataType: ClinicalDataType;
    dataRange?: [number, number];
+   required: boolean 
+     enumValue?: string[]
 }

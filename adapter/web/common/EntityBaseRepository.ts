@@ -47,17 +47,17 @@ export abstract class EntityBaseRepository<DomainEntity extends Entity<EntityPro
          const store = await this.getObjectStore("readwrite");
          const data = this.mapper.toPersistence(entity);
          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-         const { id, ...otherProps } = data as any;
-         await store.put(otherProps, id);
-         if (entity instanceof AggregateRoot) {
-            const domainEvents = entity.getDomainEvents();
-            if (this.eventBus) {
-               const eventPublishingPromises = domainEvents.map(this.eventBus.publishAndDispatchImmediate);
-               await Promise.all(eventPublishingPromises);
-            }
-         }
+         // const { id, ...otherProps } = data as any;
+         await store.put(data);
+         // if (entity instanceof AggregateRoot) {
+         //    const domainEvents = entity.getDomainEvents();
+         //    if (this.eventBus) {
+         //       const eventPublishingPromises = domainEvents.map(this.eventBus.publishAndDispatchImmediate);
+         //       await Promise.all(eventPublishingPromises);
+         //    }
+         // }
       } catch (error) {
-         console.error(error);
+         console.error(error,this.eventBus);
       }
    }
    async delete(id: AggregateID): Promise<void> {

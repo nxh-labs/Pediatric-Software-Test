@@ -30,7 +30,9 @@ export class Complication extends Entity<IComplication> {
       this.validate();
    }
    public validate(): void {
-      throw new Error("Method not implemented.");
+      this._isValid = false;
+      // Validation code here
+      this._isValid = true;
    }
    static create(createProps: CreateComplicationProps, id: AggregateID): Result<Complication> {
       try {

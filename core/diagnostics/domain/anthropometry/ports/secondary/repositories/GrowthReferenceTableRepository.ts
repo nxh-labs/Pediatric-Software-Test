@@ -5,4 +5,5 @@ export interface GrowthReferenceTableRepository extends Repository<GrowthReferen
    getByCode(code: SystemCode): Promise<GrowthReferenceTable>;
    getAll(): Promise<GrowthReferenceTable[]>;
    getAllCode(): Promise<SystemCode[]>;
+    exist(code: SystemCode): Promise<boolean>
 }
